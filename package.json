@@ -11,7 +11,8 @@
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "predeploygh": "npm run build",
-    "deploygh": "gh-pages -d dist"
+    "deploygh": "gh-pages -d dist",
+    "postbuild": "copy dist\\index.html dist\\404.html"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
