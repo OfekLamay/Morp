@@ -168,7 +168,7 @@ export default function RulesPerformance() {
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium ">Highest Ticket Count</h3>
-            <span className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
+            <span className="text-xs px-2 py-1 bg-primary/20  rounded">
               {formatId(topRules[0].id, 'R', 3)}
             </span>
           </div>
@@ -177,7 +177,7 @@ export default function RulesPerformance() {
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
               <span>True Positive Rate</span>
-              <span className="font-medium text-primary">{topRules[0].truePositiveRate}%</span>
+              <span className="font-medium ">{topRules[0].truePositiveRate}%</span>
             </div>
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
               <div 
@@ -202,7 +202,7 @@ export default function RulesPerformance() {
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium ">Second Highest</h3>
-            <span className="text-xs px-2 py-1 bg-secondary/20 text-secondary rounded">
+            <span className="text-xs px-2 py-1 bg-secondary/20 rounded">
               {formatId(topRules[1].id, 'R', 3)}
             </span>
           </div>
@@ -211,7 +211,7 @@ export default function RulesPerformance() {
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
               <span>True Positive Rate</span>
-              <span className="font-medium text-primary">{topRules[1].truePositiveRate}%</span>
+              <span className="font-medium ">{topRules[1].truePositiveRate}%</span>
             </div>
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
               <div 
@@ -236,7 +236,7 @@ export default function RulesPerformance() {
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-medium">Third Highest</h3>
-            <span className="text-xs px-2 py-1 bg-amber-500/20 text-amber-500 rounded">
+            <span className="text-xs px-2 py-1 bg-amber-500/20 rounded">
               {formatId(topRules[2].id, 'R', 3)}
             </span>
           </div>
@@ -245,7 +245,7 @@ export default function RulesPerformance() {
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
               <span>True Positive Rate</span>
-              <span className="font-medium text-primary">{topRules[2].truePositiveRate}%</span>
+              <span className="font-medium ">{topRules[2].truePositiveRate}%</span>
             </div>
             <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
               <div 
@@ -323,7 +323,7 @@ export default function RulesPerformance() {
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
-              <p className="text-2xl font-semibold text-primary">{topRules[0].truePositiveRate}%</p>
+              <p className="text-2xl font-semibold ">{topRules[0].truePositiveRate}%</p>
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">False Positive Rate</p>
@@ -348,7 +348,7 @@ export default function RulesPerformance() {
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
-              <p className="text-2xl font-semibold text-primary">{topRules[1].truePositiveRate}%</p>
+              <p className="text-2xl font-semibold ">{topRules[1].truePositiveRate}%</p>
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">False Positive Rate</p>

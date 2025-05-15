@@ -63,7 +63,7 @@ export default function Navbar() {
                   aria-haspopup="true"
                 >
                   <span className="sr-only">Open user menu</span>
-                  <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center  font-medium">
+                  <div className="profile-image">
                     AS
                   </div>
                 </button>
