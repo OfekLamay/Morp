@@ -26,7 +26,7 @@ export default function StatCard({
       <div className="flex items-center">
         <div className="flex-1">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-semibold text-foreground">{value}</p>
+          <p className="text-2xl font-semibold ">{value}</p>
         </div>
         <div className={cn("p-3 rounded-full bg-opacity-20", iconColor, `bg-${iconColor.split('-')[1]}`)}>
           <Icon className="h-5 w-5" />

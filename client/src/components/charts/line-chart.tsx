@@ -28,7 +28,7 @@ export default function CustomLineChart({
 }: LineChartProps) {
   return (
     <div className="grid-card p-5 h-full">
-      <h2 className="text-lg font-medium text-foreground mb-4">{title}</h2>
+      <h2 className="text-lg font-medium  mb-4">{title}</h2>
       <div style={{ height: `${height}px` }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart

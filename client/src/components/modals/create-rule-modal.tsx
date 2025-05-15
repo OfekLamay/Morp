@@ -78,7 +78,7 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-card text-foreground">
+      <DialogContent className="sm:max-w-[500px] bg-card ">
         <DialogHeader>
           <DialogTitle className="text-lg font-medium">Create New Rule</DialogTitle>
           <DialogDescription className="text-muted-foreground">

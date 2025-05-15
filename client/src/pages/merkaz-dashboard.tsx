@@ -90,7 +90,7 @@ export default function MerkazDashboard() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">Merkaz Dashboard</h1>
+        <h1 className="text-2xl font-semibold ">Merkaz Dashboard</h1>
         <div className="flex space-x-2">
           <Select
             value={timePeriod}
@@ -143,7 +143,7 @@ export default function MerkazDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="grid-card overflow-hidden">
           <div className="p-4 border-b border-border flex justify-between items-center">
-            <h3 className="text-lg font-medium text-foreground">Ticket Status Distribution</h3>
+            <h3 className="text-lg font-medium ">Ticket Status Distribution</h3>
             <ExportButton
               title="Ticket Status Distribution"
               headers={["Status", "Count", "Percentage"]}
@@ -166,7 +166,7 @@ export default function MerkazDashboard() {
         
         <div className="grid-card overflow-hidden">
           <div className="p-4 border-b border-border flex justify-between items-center">
-            <h3 className="text-lg font-medium text-foreground">Detection Trends</h3>
+            <h3 className="text-lg font-medium ">Detection Trends</h3>
             <ExportButton
               title="Detection Trends"
               headers={["Date", "R001 (TP)", "R001 (FP)", "R002 (TP)", "R002 (FP)"]}
@@ -195,7 +195,7 @@ export default function MerkazDashboard() {
 
       {/* Rules Performance Cards */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-foreground">Top Rules Performance</h2>
+        <h2 className="text-xl font-semibold ">Top Rules Performance</h2>
         <ExportButton
           title="Rules Performance Overview"
           headers={["Rule", "Description", "Total Cases", "True Positive Rate", "False Positive Rate", "Avg. Resolution Time"]}
@@ -224,13 +224,13 @@ export default function MerkazDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Demo data for rule performance */}
         <Card className="p-5">
-          <h3 className="text-lg font-medium text-foreground mb-4">
+          <h3 className="text-lg font-medium  mb-4">
             R001: Detect suspicious location patterns
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold text-foreground">150</p>
+              <p className="text-2xl font-semibold ">150</p>
             </div>
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
@@ -242,19 +242,19 @@ export default function MerkazDashboard() {
             </div>
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold text-foreground">4.2h</p>
+              <p className="text-2xl font-semibold ">4.2h</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-5">
-          <h3 className="text-lg font-medium text-foreground mb-4">
+          <h3 className="text-lg font-medium  mb-4">
             R002: Monitor high-risk communications
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold text-foreground">80</p>
+              <p className="text-2xl font-semibold ">80</p>
             </div>
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
@@ -266,7 +266,7 @@ export default function MerkazDashboard() {
             </div>
             <div className="bg-card p-3 rounded border border-border">
               <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold text-foreground">3.8h</p>
+              <p className="text-2xl font-semibold ">3.8h</p>
             </div>
           </div>
         </Card>
@@ -275,7 +275,7 @@ export default function MerkazDashboard() {
       {/* Recent Tickets Table */}
       <div className="grid-card overflow-hidden">
         <div className="p-4 border-b border-border flex justify-between items-center">
-          <h3 className="text-lg font-medium text-foreground">Recent Tickets</h3>
+          <h3 className="text-lg font-medium ">Recent Tickets</h3>
           <div className="flex items-center gap-2">
             <ExportButton
               title="Recent Tickets"

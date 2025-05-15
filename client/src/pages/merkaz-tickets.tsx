@@ -22,7 +22,7 @@ export default function MerkazTickets() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">Merkaz Tickets</h1>
+        <h1 className="text-2xl font-semibold ">Merkaz Tickets</h1>
       </div>
 
       <div className="grid-card mb-6 p-4">

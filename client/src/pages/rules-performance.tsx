@@ -112,7 +112,7 @@ export default function RulesPerformance() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">Rules Performance</h1>
+        <h1 className="text-2xl font-semibold ">Rules Performance</h1>
         <div className="flex space-x-2">
           <Select
             value={ruleIds}
@@ -148,7 +148,7 @@ export default function RulesPerformance() {
 
       {/* Top 3 Rules with Most Tickets */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-foreground">Top 3 Rules with Most Tickets</h2>
+        <h2 className="text-xl font-semibold ">Top 3 Rules with Most Tickets</h2>
         <ExportButton
           title="Top Rules Performance Report"
           headers={["Rule ID", "Description", "Tickets", "TP Rate", "FP Rate"]}
@@ -167,12 +167,12 @@ export default function RulesPerformance() {
         {/* Rule #1 */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-medium text-foreground">Highest Ticket Count</h3>
+            <h3 className="text-lg font-medium ">Highest Ticket Count</h3>
             <span className="text-xs px-2 py-1 bg-primary/20 text-primary rounded">
               {formatId(topRules[0].id, 'R', 3)}
             </span>
           </div>
-          <p className="text-3xl font-bold text-foreground">{topRules[0].ticketCount}</p>
+          <p className="text-3xl font-bold ">{topRules[0].ticketCount}</p>
           <p className="text-sm text-muted-foreground">Total tickets generated</p>
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
@@ -201,12 +201,12 @@ export default function RulesPerformance() {
         {/* Rule #2 */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-medium text-foreground">Second Highest</h3>
+            <h3 className="text-lg font-medium ">Second Highest</h3>
             <span className="text-xs px-2 py-1 bg-secondary/20 text-secondary rounded">
               {formatId(topRules[1].id, 'R', 3)}
             </span>
           </div>
-          <p className="text-3xl font-bold text-foreground">{topRules[1].ticketCount}</p>
+          <p className="text-3xl font-bold ">{topRules[1].ticketCount}</p>
           <p className="text-sm text-muted-foreground">Total tickets generated</p>
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
@@ -235,12 +235,12 @@ export default function RulesPerformance() {
         {/* Rule #3 */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-medium text-foreground">Third Highest</h3>
+            <h3 className="text-lg font-medium">Third Highest</h3>
             <span className="text-xs px-2 py-1 bg-amber-500/20 text-amber-500 rounded">
               {formatId(topRules[2].id, 'R', 3)}
             </span>
           </div>
-          <p className="text-3xl font-bold text-foreground">{topRules[2].ticketCount}</p>
+          <p className="text-3xl font-bold ">{topRules[2].ticketCount}</p>
           <p className="text-sm text-muted-foreground">Total tickets generated</p>
           <div className="mt-4">
             <div className="flex justify-between text-sm mb-1">
@@ -269,7 +269,7 @@ export default function RulesPerformance() {
 
       {/* Detection Trends Chart */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-foreground">Detection Trends</h2>
+        <h2 className="text-xl font-semibold ">Detection Trends</h2>
         <ExportButton
           title="Rule Detection Trends"
           headers={["Date", "R001 (TP)", "R001 (FP)", "R002 (TP)", "R002 (FP)"]}
@@ -294,7 +294,7 @@ export default function RulesPerformance() {
 
       {/* Rules Performance Cards */}
       <div className="flex justify-between items-center mb-4 mt-8">
-        <h2 className="text-xl font-semibold text-foreground">Detailed Rule Performance</h2>
+        <h2 className="text-xl font-semibold ">Detailed Rule Performance</h2>
         <ExportButton
           title="Detailed Rule Performance"
           headers={["Rule", "Description", "Total Cases", "True Positive Rate", "False Positive Rate", "Avg. Resolution Time"]}
@@ -313,13 +313,13 @@ export default function RulesPerformance() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Rule 1 Performance */}
         <Card className="p-5">
-          <h3 className="text-lg font-medium text-foreground mb-4">
+          <h3 className="text-lg font-medium  mb-4">
             {formatId(topRules[0].id, 'R', 3)}: {topRules[0].description}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold text-foreground">{topRules[0].ticketCount}</p>
+              <p className="text-2xl font-semibold ">{topRules[0].ticketCount}</p>
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
@@ -331,20 +331,20 @@ export default function RulesPerformance() {
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold text-foreground">{topRules[0].avgResolutionTime}h</p>
+              <p className="text-2xl font-semibold ">{topRules[0].avgResolutionTime}h</p>
             </Card>
           </div>
         </Card>
 
         {/* Rule 2 Performance */}
         <Card className="p-5">
-          <h3 className="text-lg font-medium text-foreground mb-4">
+          <h3 className="text-lg font-medium  mb-4">
             {formatId(topRules[1].id, 'R', 3)}: {topRules[1].description}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold text-foreground">{topRules[1].ticketCount}</p>
+              <p className="text-2xl font-semibold ">{topRules[1].ticketCount}</p>
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">True Positive Rate</p>
@@ -356,7 +356,7 @@ export default function RulesPerformance() {
             </Card>
             <Card className="p-3 border border-border">
               <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold text-foreground">{topRules[1].avgResolutionTime}h</p>
+              <p className="text-2xl font-semibold ">{topRules[1].avgResolutionTime}h</p>
             </Card>
           </div>
         </Card>
@@ -364,7 +364,7 @@ export default function RulesPerformance() {
 
       {/* Monthly Performance Comparison */}
       <div className="flex justify-between items-center mb-4 mt-6">
-        <h2 className="text-xl font-semibold text-foreground">Monthly Performance Comparison</h2>
+        <h2 className="text-xl font-semibold ">Monthly Performance Comparison</h2>
         <ExportButton
           title="Rules Monthly Performance Comparison"
           headers={["Rule", "Previous Tickets", "Current Tickets", "Previous TP Rate", "Current TP Rate", "Trend"]}

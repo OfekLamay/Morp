@@ -3,58 +3,58 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 20% 98%; /* Cream white background */
-  --foreground: 220 20% 10%; /* Dark text for readability on cream bg */
-  --muted: 220 13% 90%;
-  --muted-foreground: 220 10% 40%;
-  --popover: 220 20% 98%;
-  --popover-foreground: 220 20% 10%;
-  --card: 220 20% 98%;
-  --card-foreground: 220 20% 10%;
-  --border: 220 13% 85%;
-  --input: 220 13% 85%;
-  --primary: 210 100% 50%; /* Blue primary color */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 210 70% 65%; /* Lighter blue secondary */
-  --secondary-foreground: 0 0% 100%;
-  --accent: 210 30% 90%; /* Very light blue accent */
-  --accent-foreground: 220 20% 10%;
+  --background: 210 30% 96%;         /* Light blue background */
+  --foreground: 0 0% 0%;             /* Black text */
+  --muted: 210 30% 90%;              /* Very light blue */
+  --muted-foreground: 0 0% 0%;       /* Black text */
+  --popover: 210 30% 96%;
+  --popover-foreground: 0 0% 0%;
+  --card: 0 0% 98%;                  /* Light gray card */
+  --card-foreground: 0 0% 0%;
+  --border: 210 30% 85%;             /* Light blue border */
+  --input: 210 30% 85%;
+  --primary: 210 100% 85%;           /* Light blue primary */
+  --primary-foreground: 0 0% 0%;     /* Black text */
+  --secondary: 210 70% 90%;          /* Lighter blue secondary */
+  --secondary-foreground: 0 0% 0%;
+  --accent: 210 30% 98%;             /* Very light blue accent */
+  --accent-foreground: 0 0% 0%;
   --destructive: 0 85% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 210 100% 50%;
+  --destructive-foreground: 0 0% 0%;
+  --ring: 210 100% 85%;
   --radius: 0.5rem;
-  --chart-1: 210 100% 50%; /* Blue */
-  --chart-2: 210 70% 65%; /* Light blue */
-  --chart-3: 220 70% 45%; /* Dark blue */
-  --chart-4: 200 70% 55%; /* Teal-blue */
-  --chart-5: 240 60% 60%; /* Indigo-blue */
+  --chart-1: 210 100% 85%;           /* Light blue */
+  --chart-2: 210 70% 90%;            /* Lighter blue */
+  --chart-3: 220 70% 80%;            /* Mid blue */
+  --chart-4: 200 70% 92%;            /* Teal-blue */
+  --chart-5: 240 60% 95%;            /* Indigo-blue */
 }
 
 .dark {
-  --background: 220 20% 10%; /* Dark navy blue background */
-  --foreground: 220 15% 95%; /* Light text for readability on dark bg */
-  --muted: 220 15% 25%;
-  --muted-foreground: 220 10% 70%;
-  --popover: 220 20% 10%;
-  --popover-foreground: 220 15% 95%;
-  --card: 220 20% 10%;
-  --card-foreground: 220 15% 95%;
-  --border: 220 15% 25%;
-  --input: 220 15% 25%;
-  --primary: 210 100% 50%; /* Blue primary color */
-  --primary-foreground: 0 0% 100%;
-  --secondary: 210 70% 65%; /* Lighter blue secondary */
-  --secondary-foreground: 0 0% 100%;
-  --accent: 210 30% 30%; /* Dark blue accent */
-  --accent-foreground: 220 15% 95%;
+  --background: 210 30% 96%;         /* Light blue background (same as light mode) */
+  --foreground: 0 0% 0%;             /* Black text */
+  --muted: 210 30% 90%;
+  --muted-foreground: 0 0% 0%;
+  --popover: 210 30% 96%;
+  --popover-foreground: 0 0% 0%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 0%;
+  --border: 210 30% 85%;
+  --input: 210 30% 85%;
+  --primary: 210 100% 85%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 210 70% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --accent: 210 30% 98%;
+  --accent-foreground: 0 0% 0%;
   --destructive: 0 85% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 210 100% 50%;
-  --chart-1: 210 100% 60%; /* Blue */
-  --chart-2: 210 70% 70%; /* Light blue */
-  --chart-3: 220 70% 55%; /* Mid blue */
-  --chart-4: 200 70% 65%; /* Teal-blue */
-  --chart-5: 240 60% 70%; /* Indigo-blue */
+  --destructive-foreground: 0 0% 0%;
+  --ring: 210 100% 85%;
+  --chart-1: 210 100% 85%;
+  --chart-2: 210 70% 90%;
+  --chart-3: 220 70% 80%;
+  --chart-4: 200 70% 92%;
+  --chart-5: 240 60% 95%;
 }
 
 @layer base {
@@ -63,12 +63,15 @@
   }
   
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background ;
   }
 
   /* Add custom styles here */
   .grid-card {
     @apply bg-card border border-border rounded-lg overflow-hidden;
+      --background: 0 0% 95%; /* Dark navy blue background */
+    --foreground: 220 15% 95%; /* Light text for readability on dark bg */
+    --muted: 220 15% 25%;
   }
   
   .matrix-bg {

@@ -35,7 +35,7 @@ export default function ManageRules() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">Manage Rules</h1>
+        <h1 className="text-2xl font-semibold ">Manage Rules</h1>
         <Button 
           className="bg-primary hover:bg-primary/90"
           onClick={() => setShowCreateModal(true)}

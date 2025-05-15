@@ -29,7 +29,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/">
               <div className="flex-shrink-0 flex items-center cursor-pointer">
-                <span className="text-primary text-xl font-bold font-mono">Morpheus</span>
+                <span className="text-primary text-xl font-bold font-mono">Morfius</span>
               </div>
             </Link>
 
@@ -40,8 +40,8 @@ export default function Navbar() {
                   <a
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
                       location === item.path
-                        ? "text-white border-b-2 border-primary"
-                        : "text-gray-300 hover:text-white"
+                        ? " border-b-2 border-primary"
+                        : " hover:"
                     }`}
                   >
                     {item.label}
@@ -63,7 +63,7 @@ export default function Navbar() {
                   aria-haspopup="true"
                 >
                   <span className="sr-only">Open user menu</span>
-                  <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-medium">
+                  <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center  font-medium">
                     AS
                   </div>
                 </button>
@@ -75,7 +75,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMobileMenu}
-              className="bg-card rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none"
+              className="bg-card rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover: hover:bg-gray-800 focus:outline-none"
             >
               <span className="sr-only">Open main menu</span>
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -93,8 +93,8 @@ export default function Navbar() {
                 <a
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     location === item.path
-                      ? "text-white bg-gray-900"
-                      : "text-gray-300 hover:text-white hover:bg-gray-700"
+                      ? " bg-gray-900"
+                      : " hover: hover:bg-gray-700"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >

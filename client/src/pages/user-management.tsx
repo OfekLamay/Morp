@@ -25,7 +25,7 @@ export default function UserManagement() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">User Management</h1>
+        <h1 className="text-2xl font-semibold ">User Management</h1>
         <Button className="bg-primary hover:bg-primary/90">
           <PlusCircle className="mr-2 h-4 w-4" />
           Add New User
