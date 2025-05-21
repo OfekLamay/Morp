@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import TicketsTable from "@/components/tables/tickets-table";
+import StatusBadge from "@/components/ui/status-badge";
+import SeverityIndicator from "@/components/ui/severity-indicator";
 import { useTickets } from "@/hooks/use-tickets";
 
 export default function MerkazTickets() {
@@ -10,21 +11,22 @@ export default function MerkazTickets() {
     rule: "all",
     severity: "all",
   });
-  
+
   const [page, setPage] = useState(1);
   const { tickets, totalCount, isLoading } = useTickets({ ...filters, page }, true);
-  
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1); // Reset page when filter changes
   };
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold ">Merkaz Tickets</h1>
       </div>
 
+      {/* Filters */}
       <div className="grid-card mb-6 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Select 
@@ -98,13 +100,41 @@ export default function MerkazTickets() {
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : (
-        <TicketsTable
-          tickets={tickets}
-          totalCount={totalCount}
-          page={page}
-          onPageChange={setPage}
-          isMerkaz={true}
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tickets.map(ticket => (
+            <div key={ticket.id} className="bg-white rounded-lg shadow p-4 flex flex-col">
+              <div className="flex justify-between mb-2">
+                <StatusBadge status={ticket.status} />
+                <SeverityIndicator severity={ticket.severity} />
+              </div>
+              {ticket.imageUrl && (
+                <img
+                  src={ticket.imageUrl}
+                  alt="Exception"
+                  className="w-full h-48 object-cover rounded mb-4"
+                />
+              )}
+              <div className="flex flex-col gap-2 text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">User:</span>
+                  <span>{ticket.userGatheredFrom}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Kabam:</span>
+                  <span>{ticket.kabamRelated}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Rule:</span>
+                  <span>{ticket.relatedRulesList[0] ?? "Didn't catch rule/s"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">Created:</span>
+                  <span>{ticket.creationDate ? new Date(ticket.creationDate).toLocaleString() : ""}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

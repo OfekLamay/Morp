@@ -73,7 +73,7 @@ export default function TicketsTable({
                   ).join(", ")}
                 </TableCell>
                 <TableCell>
-                  <SeverityIndicator severity={ticket.importance} />
+                  <SeverityIndicator severity={ticket.severity} />
                 </TableCell>
                 <TableCell>
                   {isMerkaz ? ticket.kabamRelated : ticket.unitRelated}

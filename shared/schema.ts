@@ -68,7 +68,7 @@ export const tickets = pgTable("tickets", {
   userGatheredFrom: text("user_gathered_from").notNull(),
   userManaging: text("user_managing").default(""),
   relatedRulesList: json("related_rules_list").$type<number[]>().notNull(),
-  importance: integer("importance").notNull(),
+  severity: integer("importance").notNull(),
   usersRelatedTo: json("users_related_to").$type<string[]>().default([]),
   status: text("status").notNull().default("waiting for identification"), // done, in progress, FP, waiting for identification, not related yet, reopened
   isTruePositive: boolean("is_true_positive").default(false), // FP/TP
