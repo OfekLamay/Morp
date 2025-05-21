@@ -63,10 +63,10 @@ export default function CustomLineChart({
               contentStyle={{ 
                 backgroundColor: 'hsl(var(--card))', 
                 borderColor: 'hsl(var(--border))',
-                color: 'hsl(var(--foreground))'
+                color: '#000'
               }}
-              itemStyle={{ color: 'hsl(var(--foreground))' }}
-              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: '#000' }}
+              labelStyle={{ color: '#000', fontWeight: 600 }}
             />
             <Legend 
               wrapperStyle={{ 
