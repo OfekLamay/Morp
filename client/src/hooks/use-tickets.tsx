@@ -16,7 +16,7 @@ export function useTickets(filters?: Record<string, string | number>, isMerkaz =
     : "";
   
   // Get tickets with optional filtering
-  const { data, isLoading, error } = useQuery<{ tickets: Ticket[], totalCount: number }>({
+  const { data, isLoading, error, refetch } = useQuery<{ tickets: Ticket[], totalCount: number }>({
     queryKey: [endpoint + queryString],
   });
 
@@ -93,7 +93,8 @@ export function useTickets(filters?: Record<string, string | number>, isMerkaz =
     error,
     createTicket,
     updateTicket,
-    deleteTicket
+    deleteTicket,
+    refetch,
   };
 }
 

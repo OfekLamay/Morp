@@ -276,6 +276,19 @@ export class MemStorage implements IStorage {
         imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
       },
       {
+        userGatheredFrom: "user623",
+        userManaging: "admin7",
+        creationDate: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        relatedRulesList: [2],
+        severity: 9,
+        status: "in progress",
+        isTruePositive: false,
+        kabamRelated: "Kabam 162",
+        unitRelated: "Unit 3412",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE0ZEM0Spbv4-MtOZfsnptKosA4SUsYtyBuw&s"
+      },
+      {
         userGatheredFrom: "user789",
         userManaging: "admin3",
         creationDate: new Date(),

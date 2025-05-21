@@ -3,6 +3,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
 import { useTickets } from "@/hooks/use-tickets";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+
+const TICKET_STATUSES = [
+  "done",
+  "in progress",
+  "false positive",
+  "waiting for identification",
+  "not related yet",
+  "reopened"
+];
 
 export default function MerkazTickets() {
   const [filters, setFilters] = useState({
@@ -13,12 +25,23 @@ export default function MerkazTickets() {
   });
 
   const [page, setPage] = useState(1);
-  const { tickets, totalCount, isLoading } = useTickets({ ...filters, page }, true);
+  const { tickets, totalCount, isLoading, updateTicket, refetch } = useTickets({ ...filters, page }, true);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1); // Reset page when filter changes
   };
+
+  function handleUpdateStatus(ticketId: number, newStatus: string) {
+    updateTicket.mutate(
+      { id: ticketId, status: newStatus },
+      {
+        onSuccess: () => {
+          if (typeof refetch === "function") refetch();
+        }
+      }
+    );
+  }
 
   return (
     <div>
@@ -107,6 +130,52 @@ export default function MerkazTickets() {
                 <StatusBadge status={ticket.status} />
                 <SeverityIndicator severity={ticket.severity} />
               </div>
+              <div className="flex justify-end mb-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-5 w-5" />
+                      <span className="sr-only">Actions</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => {/* TODO: View Details */}}>View Details</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {/* TODO: Assign User */}}>Assign User</DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      Update Status
+                    </DropdownMenuItem>
+                    {TICKET_STATUSES.map(status => (
+                      <DropdownMenuItem
+                        key={status}
+                        onClick={() => handleUpdateStatus(ticket.id, status)}
+                        inset
+                      >
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateTicket.mutate(
+                          { id: ticket.id, isTruePositive: true, status: "not related yet" },
+                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                        )
+                      }
+                    >
+                      Mark as True Positive
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() =>
+                        updateTicket.mutate(
+                          { id: ticket.id, isTruePositive: false, status: "false positive" },
+                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                        )
+                      }
+                    >
+                      Mark as False Positive
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
               {ticket.imageUrl && (
                 <img
                   src={ticket.imageUrl}
@@ -114,21 +183,22 @@ export default function MerkazTickets() {
                   className="w-full h-48 object-cover rounded mb-4"
                 />
               )}
+              {/* Ticket */}
               <div className="flex flex-col gap-2 text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">User:</span>
+                  <span className="font-semibold">User monitored:</span>
                   <span>{ticket.userGatheredFrom}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">Kabam:</span>
+                  <span className="font-semibold">Kabam related:</span>
                   <span>{ticket.kabamRelated}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">Rule:</span>
+                  <span className="font-semibold">Rule related:</span>
                   <span>{ticket.relatedRulesList[0] ?? "Didn't catch rule/s"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">Created:</span>
+                  <span className="font-semibold">Date created:</span>
                   <span>{ticket.creationDate ? new Date(ticket.creationDate).toLocaleString() : ""}</span>
                 </div>
               </div>
