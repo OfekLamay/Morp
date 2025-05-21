@@ -54,6 +54,7 @@ export default function TicketsTable({
               <TableHead className="font-medium text-muted-foreground">Created</TableHead>
               <TableHead className="font-medium text-muted-foreground">Expires</TableHead>
               <TableHead className="font-medium text-muted-foreground">Actions</TableHead>
+              <TableHead className="font-medium text-muted-foreground">Image</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -98,6 +99,17 @@ export default function TicketsTable({
                       <DropdownMenuItem>Mark as {ticket.isTruePositive ? 'False Positive' : 'True Positive'}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  {ticket.imageUrl ? (
+                    <img
+                      src={ticket.imageUrl}
+                      alt="Exception"
+                      style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4 }}
+                    />
+                  ) : (
+                    <span className="text-muted-foreground">No image</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

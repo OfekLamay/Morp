@@ -185,8 +185,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const ticketsList = await storage.getMerkazTickets({ status, kabam, rule, severity, skip, limit: parseInt(limit) });
       const totalCount = await storage.getMerkazTicketsCount({ status, kabam, rule, severity });
-      
-      res.json({ tickets: ticketsList, totalCount });
+
+      // Explicitly include imageUrl in the response
+      const ticketsWithImage = ticketsList.map(ticket => ({
+        ...ticket,
+        imageUrl: ticket.imageUrl || null, // or whatever your field is called
+      }));
+
+      res.json({ tickets: ticketsWithImage, totalCount });
     } catch (error) {
       console.error("Error fetching merkaz tickets:", error);
       res.status(500).json({ message: "Failed to fetch tickets" });
@@ -265,8 +271,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const ticketsList = await storage.getKabamTickets({ status, unit, rule, severity, skip, limit: parseInt(limit) });
       const totalCount = await storage.getKabamTicketsCount({ status, unit, rule, severity });
-      
-      res.json({ tickets: ticketsList, totalCount });
+
+      // Explicitly include imageUrl in the response
+      const ticketsWithImage = ticketsList.map(ticket => ({
+        ...ticket,
+        imageUrl: ticket.imageUrl || null,
+      }));
+
+      res.json({ tickets: ticketsWithImage, totalCount });
     } catch (error) {
       console.error("Error fetching kabam tickets:", error);
       res.status(500).json({ message: "Failed to fetch tickets" });

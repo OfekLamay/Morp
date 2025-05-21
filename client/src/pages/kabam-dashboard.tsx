@@ -175,6 +175,7 @@ export default function KabamDashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="grid-card overflow-hidden">
+          {/* Ticket Status Distribution */}
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="text-lg font-medium ">Ticket Status Distribution</h3>
             <ExportButton

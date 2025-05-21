@@ -166,6 +166,7 @@ export default function MerkazDashboard() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Tickets status distribution */}
         <div className="grid-card overflow-hidden">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="text-lg font-medium ">Ticket Status Distribution</h3>
@@ -188,7 +189,8 @@ export default function MerkazDashboard() {
             />
           </div>
         </div>
-        
+
+        {/* Detection Trends */}
         <div className="grid-card overflow-hidden">
           <div className="p-4 border-b border-border flex justify-between items-center">
             <h3 className="text-lg font-medium ">Detection Trends</h3>

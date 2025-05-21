@@ -74,6 +74,7 @@ export const tickets = pgTable("tickets", {
   isTruePositive: boolean("is_true_positive").default(false), // FP/TP
   kabamRelated: text("kabam_related").default("need to be related"),
   unitRelated: text("unit_related").default("need to be related"),
+  imageUrl: text("image_url").default(""), // Add this line
 });
 
 export const insertTicketSchema = createInsertSchema(tickets).omit({
