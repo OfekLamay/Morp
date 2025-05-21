@@ -253,18 +253,29 @@ export default function KabamDashboard() {
         <div className="bg-white rounded shadow p-4">
           <h3 className="font-semibold mb-2">Tickets by Rule</h3>
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={[
-              { rule: 'Uniform.Soldier.B', count: 2 },
-              { rule: 'Location.WestBank.B', count: 2 },
-              { rule: 'Location.North.C', count: 2 },
-              { rule: 'Access to Restricted Site', count: 1 },
-              { rule: 'Unauthorized Upload', count: 1 },
-              { rule: 'Suspicious File Transfer', count: 1 },
-            ]}>
+            <BarChart data={ruleData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="rule" angle={-45} textAnchor="end" interval={0} height={60} />
-              <YAxis />
-              <Tooltip />
+              <XAxis
+                dataKey="rule"
+                angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={60}
+                stroke="#000"
+                tick={{ fill: "#000" }}
+                label={{ value: "Rule", fill: "#000" }}
+              />
+              <YAxis
+                stroke="#000"
+                tick={{ fill: "#000" }}
+                label={{ value: "Count", angle: -90, position: "insideLeft", fill: "#000" }}
+              />
+              <Tooltip
+                contentStyle={{ color: "#000" }}
+                labelStyle={{ color: "#000" }}
+                itemStyle={{ color: "#000" }}
+              />
+              <Legend wrapperStyle={{ color: "#000" }} />
               <Bar dataKey="count" fill="#2563eb" />
             </BarChart>
           </ResponsiveContainer>

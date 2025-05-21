@@ -72,9 +72,9 @@ export default function CustomLineChart({
               wrapperStyle={{ 
                 paddingTop: '10px', 
                 fontSize: '12px', 
-                color: 'hsl(var(--foreground))'
+                color: '#000'
               }}
-              formatter={(value) => <span style={{ color: 'hsl(var(--foreground))' }}>{value}</span>}
+              formatter={(value) => <span style={{ color: '#000' }}>{value}</span>}
             />
             {lines.map((line) => (
               <Line

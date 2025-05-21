@@ -160,6 +160,7 @@ export default function MerkazDashboard() {
           icon={Users}
           iconColor="text-purple-500"
           change={{ value: "2", positive: true }}
+          className="orange-500"
         />
       </div>
 
@@ -247,9 +248,29 @@ export default function MerkazDashboard() {
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={ruleData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="rule" angle={-45} textAnchor="end" interval={0} height={60} />
-              <YAxis />
-              <Tooltip />
+              <XAxis
+                dataKey="rule"
+                angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={60}
+                stroke="#000" // <-- Make X axis labels black
+                tick={{ fill: "#000" }} // <-- Make X axis tick labels black
+                label={{ value: "Rule", fill: "#000" }} // <-- X axis label black
+              />
+              <YAxis
+                stroke="#000" // <-- Make Y axis labels black
+                tick={{ fill: "#000" }} // <-- Make Y axis tick labels black
+                label={{ value: "Count", angle: -90, position: "insideLeft", fill: "#000" }} // <-- Y axis label black
+              />
+              <Tooltip
+                contentStyle={{ color: "#000" }} // Tooltip text black
+                labelStyle={{ color: "#000" }}
+                itemStyle={{ color: "#000" }}
+              />
+              <Legend
+                wrapperStyle={{ color: "#000" }} // Legend text black
+              />
               <Bar dataKey="count">
                 <Cell fill="#3b82f6" />
                 <Cell fill="#fbbf24" />

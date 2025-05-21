@@ -28,7 +28,7 @@ export default function StatCard({
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
           <p className="text-2xl font-semibold ">{value}</p>
         </div>
-        <div className={cn("p-3 rounded-full bg-opacity-20", iconColor, `bg-${iconColor.split('-')[1]}`)}>
+        <div className={cn("p-3 rounded-full bg-opacity-20", iconColor)}>
           <Icon className="h-5 w-5" />
         </div>
       </div>
