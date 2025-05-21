@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import emptyImg from "../media/wow-such-empty.jpg";
+import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
 
 
 const TICKET_STATUSES = [
@@ -29,6 +30,9 @@ export default function MerkazTickets() {
   const [page, setPage] = useState(1);
   const { tickets, totalCount, isLoading, updateTicket, refetch } = useTickets({ ...filters, page }, true);
 
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setPage(1); // Reset page when filter changes
@@ -43,6 +47,11 @@ export default function MerkazTickets() {
         }
       }
     );
+  }
+
+  function handleViewDetails(ticket) {
+    setSelectedTicket(ticket);
+    setIsModalOpen(true);
   }
 
   return (
@@ -141,7 +150,9 @@ export default function MerkazTickets() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => {/* TODO: View Details */}}>View Details</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewDetails(ticket)}>
+                      View Details
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => {/* TODO: Assign User */}}>Assign User</DropdownMenuItem>
                     <DropdownMenuItem disabled>
                       Update Status
@@ -211,6 +222,42 @@ export default function MerkazTickets() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {isModalOpen && selectedTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-xl font-semibold mb-4">Ticket Details</h2>
+            <img
+              src={selectedTicket.imageUrl || emptyImg}
+              alt=""
+              className="w-full h-48 object-cover rounded mb-4"
+              onError={e => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = emptyImg;
+              }}
+            />
+            <div className="space-y-2 text-sm">
+              <div><span className="font-semibold">ID:</span> {selectedTicket.id}</div>
+              <div><span className="font-semibold">Creation Date:</span> {selectedTicket.creationDate ? new Date(selectedTicket.creationDate).toLocaleString() : ""}</div>
+              <div><span className="font-semibold">Expiration Date:</span> {selectedTicket.expirationDate ? new Date(selectedTicket.expirationDate).toLocaleString() : ""}</div>
+              <div><span className="font-semibold">User Gathered From:</span> {selectedTicket.userGatheredFrom}</div>
+              <div><span className="font-semibold">User Managing:</span> {selectedTicket.userManaging}</div>
+              <div><span className="font-semibold">Related Rules:</span> {selectedTicket.relatedRulesList?.join(", ")}</div>
+              <div><span className="font-semibold">Severity:</span> {selectedTicket.severity}</div>
+              <div><span className="font-semibold">Users Related To:</span> {selectedTicket.usersRelatedTo?.join(", ")}</div>
+              <div><span className="font-semibold">Status:</span> {selectedTicket.status}</div>
+              <div><span className="font-semibold">True Positive:</span> {selectedTicket.isTruePositive ? "Yes" : "No"}</div>
+              <div><span className="font-semibold">Kabam Related:</span> {selectedTicket.kabamRelated}</div>
+              <div><span className="font-semibold">Unit Related:</span> {selectedTicket.unitRelated}</div>
+            </div>
+          </div>
         </div>
       )}
     </div>
