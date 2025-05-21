@@ -268,9 +268,6 @@ export default function MerkazDashboard() {
                 labelStyle={{ color: "#000" }}
                 itemStyle={{ color: "#000" }}
               />
-              <Legend
-                wrapperStyle={{ color: "#000" }} // Legend text black
-              />
               <Bar dataKey="count">
                 <Cell fill="#3b82f6" />
                 <Cell fill="#fbbf24" />

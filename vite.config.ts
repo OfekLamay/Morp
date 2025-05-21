@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  base: '/Morp/',
+  base: '/Morp/', // for GitHub Pages, but not for local dev
   plugins: [
     react(),
   ],

@@ -41,9 +41,18 @@ export default function KabamDashboard() {
   const ruleData = [
     { rule: 'Location,Gaza,A', count: 2 },
     { rule: 'Uniform,Soldier,B', count: 2 },
-    // ...more rules
+    { rule: 'Location,Tel Aviv,C', count: 2 },
+    { rule: 'Uniform,Officer,D', count: 2 },
+    { rule: 'Location,Jerusalem,E', count: 2 },
+    { rule: 'Uniform,Commander,F', count: 2 },
+    { rule: 'Location,Haifa,G', count: 2 },
+    { rule: 'Uniform,General,H', count: 2 },
+    { rule: 'Location,Tel Aviv,I', count: 2 },
+    { rule: 'Uniform,Soldier,J', count: 2 },
+    { rule: 'Location,Jerusalem,K', count: 2 },
+    { rule: 'Uniform,Officer,L', count: 2 }
   ];
-  
+
   const kabamData = [
     { kabam: 'Kabam 98', count: 9 },
     { kabam: 'Kabam 162', count: 9 },
@@ -275,7 +284,6 @@ export default function KabamDashboard() {
                 labelStyle={{ color: "#000" }}
                 itemStyle={{ color: "#000" }}
               />
-              <Legend wrapperStyle={{ color: "#000" }} />
               <Bar dataKey="count" fill="#2563eb" />
             </BarChart>
           </ResponsiveContainer>
