@@ -247,6 +247,50 @@ export class MemStorage implements IStorage {
     ];
 
     sampleTickets.forEach(ticket => this.createTicket(ticket));
+
+    const demoTickets = [
+      {
+        userGatheredFrom: "user123",
+        userManaging: "admin1",
+        creationDate: new Date(),
+        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        relatedRulesList: [1],
+        severity: 9,
+        status: "done",
+        isTruePositive: true,
+        kabamRelated: "Kabam A",
+        unitRelated: "Unit 81",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+      },
+      {
+        userGatheredFrom: "user456",
+        userManaging: "admin2",
+        creationDate: new Date(),
+        expirationDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        relatedRulesList: [2],
+        severity: 6,
+        status: "in progress",
+        isTruePositive: false,
+        kabamRelated: "Kabam B",
+        unitRelated: "Unit 8200",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+      },
+      {
+        userGatheredFrom: "user789",
+        userManaging: "admin3",
+        creationDate: new Date(),
+        expirationDate: new Date(Date.now() + 72 * 60 * 60 * 1000),
+        relatedRulesList: [3],
+        severity: 3,
+        status: "false positive",
+        isTruePositive: false,
+        kabamRelated: "Kabam C",
+        unitRelated: "Unit 504",
+        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+      }
+    ];
+    
+    demoTickets.forEach(ticket => this.createTicket(ticket));
   }
 
   // User methods
