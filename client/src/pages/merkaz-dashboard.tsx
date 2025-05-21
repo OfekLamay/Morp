@@ -250,7 +250,11 @@ export default function MerkazDashboard() {
               <XAxis dataKey="rule" angle={-45} textAnchor="end" interval={0} height={60} />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="count" fill="#2563eb" />
+              <Bar dataKey="count">
+                <Cell fill="#3b82f6" />
+                <Cell fill="#fbbf24" />
+                <Cell fill="#ef4444" />
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -281,151 +285,6 @@ export default function MerkazDashboard() {
               <Bar dataKey="count" fill="#2563eb" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Rules Performance Cards */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold ">Top Rules Performance</h2>
-        <ExportButton
-          title="Rules Performance Overview"
-          headers={["Rule", "Description", "Total Cases", "True Positive Rate", "False Positive Rate", "Avg. Resolution Time"]}
-          data={[
-            {
-              "Rule": "R001",
-              "Description": "Detect suspicious location patterns",
-              "Total Cases": 150,
-              "True Positive Rate": "80.0%",
-              "False Positive Rate": "20.0%",
-              "Avg. Resolution Time": "4.2h"
-            },
-            {
-              "Rule": "R002",
-              "Description": "Monitor high-risk communications",
-              "Total Cases": 80,
-              "True Positive Rate": "81.3%",
-              "False Positive Rate": "18.8%",
-              "Avg. Resolution Time": "3.8h"
-            }
-          ]}
-          filename="rules_performance_overview"
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Demo data for rule performance */}
-        <Card className="p-5">
-          <h3 className="text-lg font-medium  mb-4">
-            R001: Detect suspicious location patterns
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold ">150</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">True Positive Rate</p>
-              <p className="text-2xl font-semibold text-primary">80.0%</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">False Positive Rate</p>
-              <p className="text-2xl font-semibold text-destructive">20.0%</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold ">4.2h</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-5">
-          <h3 className="text-lg font-medium  mb-4">
-            R002: Monitor high-risk communications
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">Total Cases</p>
-              <p className="text-2xl font-semibold ">80</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">True Positive Rate</p>
-              <p className="text-2xl font-semibold text-primary">81.3%</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">False Positive Rate</p>
-              <p className="text-2xl font-semibold text-destructive">18.8%</p>
-            </div>
-            <div className="bg-card p-3 rounded border border-border">
-              <p className="text-sm text-muted-foreground">Avg. Resolution Time</p>
-              <p className="text-2xl font-semibold ">3.8h</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Recent Tickets Table */}
-      <div className="grid-card overflow-hidden">
-        <div className="p-4 border-b border-border flex justify-between items-center">
-          <h3 className="text-lg font-medium ">Recent Tickets</h3>
-          <div className="flex items-center gap-2">
-            <ExportButton
-              title="Recent Tickets"
-              headers={["ID", "Status", "Severity", "Rule", "Kabam", "Created"]}
-              data={recentTickets.map(ticket => ({
-                "ID": formatId(ticket.id, 'TKT'),
-                "Status": ticket.status,
-                "Severity": ticket.severity,
-                "Rule": ticket.rule,
-                "Kabam": ticket.kabam,
-                "Created": formatDate(ticket.creationDate)
-              }))}
-              filename="recent_tickets"
-              variant="outline"
-              size="sm"
-            />
-            <Link href="/merkaz-tickets">
-              <Button variant="link" className="text-primary">View All</Button>
-            </Link>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-card">
-              <TableRow>
-                <TableHead className="font-medium text-muted-foreground">ID</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Status</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Severity</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Rule</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Kabam</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Created</TableHead>
-                <TableHead className="font-medium text-muted-foreground">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentTickets.map((ticket) => (
-                <TableRow key={ticket.id} className="table-row-alt">
-                  <TableCell className="font-medium">{formatId(ticket.id, 'TKT')}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={ticket.status} />
-                  </TableCell>
-                  <TableCell>
-                    <SeverityIndicator severity={ticket.severity} />
-                  </TableCell>
-                  <TableCell>{ticket.rule}</TableCell>
-                  <TableCell>{ticket.kabam}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {formatDate(ticket.creationDate)}
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Actions</span>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
         </div>
       </div>
     </div>
