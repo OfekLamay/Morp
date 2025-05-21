@@ -185,7 +185,7 @@ export class MemStorage implements IStorage {
         enforcement: "ACTIVE",
         userCreated: "jsmith",
         managerApproved: "sjohnson",
-        importance: 8,
+        severity: 8,
         usersRelatedTo: ["dlee", "sjohnson"],
         enabled: true,
       },
@@ -196,7 +196,7 @@ export class MemStorage implements IStorage {
         enforcement: "ACTIVE",
         userCreated: "sjohnson",
         managerApproved: "jsmith",
-        importance: 9,
+        severity: 9,
         usersRelatedTo: ["dlee"],
         enabled: true,
       },
@@ -207,46 +207,13 @@ export class MemStorage implements IStorage {
         enforcement: "SILENT",
         userCreated: "dlee",
         managerApproved: "",
-        importance: 5,
+        severity: 5,
         usersRelatedTo: [],
         enabled: true,
       },
     ];
 
     sampleRules.forEach(rule => this.createRule(rule));
-
-    // Seed some sample tickets
-    const sampleTickets: InsertTicket[] = [
-      {
-        expirationDate: new Date(Date.now() + 8 * 60 * 60 * 1000),
-        userGatheredFrom: "user123",
-        relatedRulesList: [1],
-        importance: 8,
-        status: "in progress",
-        kabamRelated: "Kabam A",
-        unitRelated: "Unit 1",
-      },
-      {
-        expirationDate: new Date(Date.now() + 6 * 60 * 60 * 1000),
-        userGatheredFrom: "user456",
-        relatedRulesList: [2],
-        importance: 6,
-        status: "done",
-        kabamRelated: "Kabam B",
-        unitRelated: "Unit 3",
-      },
-      {
-        expirationDate: new Date(Date.now() - 4 * 60 * 60 * 1000),
-        userGatheredFrom: "user789",
-        relatedRulesList: [1],
-        importance: 3,
-        status: "false positive",
-        kabamRelated: "Kabam C",
-        unitRelated: "Unit 2",
-      },
-    ];
-
-    sampleTickets.forEach(ticket => this.createTicket(ticket));
 
     const demoTickets = [
       {
@@ -429,13 +396,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          rules = rules.filter(rule => rule.importance >= 8);
+          rules = rules.filter(rule => rule.severity >= 8);
           break;
         case 'medium':
-          rules = rules.filter(rule => rule.importance >= 5 && rule.importance <= 7);
+          rules = rules.filter(rule => rule.severity >= 5 && rule.severity <= 7);
           break;
         case 'low':
-          rules = rules.filter(rule => rule.importance <= 4);
+          rules = rules.filter(rule => rule.severity <= 4);
           break;
       }
     }
@@ -482,13 +449,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          rules = rules.filter(rule => rule.importance >= 8);
+          rules = rules.filter(rule => rule.severity >= 8);
           break;
         case 'medium':
-          rules = rules.filter(rule => rule.importance >= 5 && rule.importance <= 7);
+          rules = rules.filter(rule => rule.severity >= 5 && rule.severity <= 7);
           break;
         case 'low':
-          rules = rules.filter(rule => rule.importance <= 4);
+          rules = rules.filter(rule => rule.severity <= 4);
           break;
       }
     }
@@ -659,13 +626,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          tickets = tickets.filter(ticket => ticket.importance >= 8);
+          tickets = tickets.filter(ticket => ticket.severity >= 8);
           break;
         case 'medium':
-          tickets = tickets.filter(ticket => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets = tickets.filter(ticket => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case 'low':
-          tickets = tickets.filter(ticket => ticket.importance <= 4);
+          tickets = tickets.filter(ticket => ticket.severity <= 4);
           break;
       }
     }
@@ -700,13 +667,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          tickets = tickets.filter(ticket => ticket.importance >= 8);
+          tickets = tickets.filter(ticket => ticket.severity >= 8);
           break;
         case 'medium':
-          tickets = tickets.filter(ticket => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets = tickets.filter(ticket => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case 'low':
-          tickets = tickets.filter(ticket => ticket.importance <= 4);
+          tickets = tickets.filter(ticket => ticket.severity <= 4);
           break;
       }
     }
@@ -733,13 +700,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          tickets = tickets.filter(ticket => ticket.importance >= 8);
+          tickets = tickets.filter(ticket => ticket.severity >= 8);
           break;
         case 'medium':
-          tickets = tickets.filter(ticket => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets = tickets.filter(ticket => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case 'low':
-          tickets = tickets.filter(ticket => ticket.importance <= 4);
+          tickets = tickets.filter(ticket => ticket.severity <= 4);
           break;
       }
     }
@@ -774,13 +741,13 @@ export class MemStorage implements IStorage {
     if (filters.severity) {
       switch(filters.severity) {
         case 'high':
-          tickets = tickets.filter(ticket => ticket.importance >= 8);
+          tickets = tickets.filter(ticket => ticket.severity >= 8);
           break;
         case 'medium':
-          tickets = tickets.filter(ticket => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets = tickets.filter(ticket => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case 'low':
-          tickets = tickets.filter(ticket => ticket.importance <= 4);
+          tickets = tickets.filter(ticket => ticket.severity <= 4);
           break;
       }
     }
@@ -826,7 +793,7 @@ export class MemStorage implements IStorage {
     const totalCount = tickets.length;
     
     // Count high severity tickets
-    const highSeverityCount = tickets.filter(ticket => ticket.importance >= 6).length;
+    const highSeverityCount = tickets.filter(ticket => ticket.severity >= 6).length;
     
     // Count in progress tickets
     const inProgressCount = tickets.filter(ticket => ticket.status === "in progress").length;
@@ -862,7 +829,7 @@ export class MemStorage implements IStorage {
     const totalCount = tickets.length;
     
     // Count high severity tickets
-    const highSeverityCount = tickets.filter(ticket => ticket.importance >= 6).length;
+    const highSeverityCount = tickets.filter(ticket => ticket.severity >= 6).length;
     
     // Count in progress tickets
     const inProgressCount = tickets.filter(ticket => ticket.status === "in progress").length;

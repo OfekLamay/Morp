@@ -64,7 +64,7 @@ export default function RulesTable({
                 </TableCell>
                 <TableCell>{rule.description}</TableCell>
                 <TableCell>
-                  <SeverityIndicator severity={rule.importance} />
+                  <SeverityIndicator severity={rule.severity} />
                 </TableCell>
                 <TableCell>{rule.userCreated}</TableCell>
                 <TableCell>{rule.managerApproved || 'pending'}</TableCell>

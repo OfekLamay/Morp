@@ -6,6 +6,7 @@ import { useTickets } from "@/hooks/use-tickets";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import emptyImg from "../media/wow-such-empty.jpg";
 
 const TICKET_STATUSES = [
   "done",
@@ -179,9 +180,14 @@ export default function KabamTickets() {
               </div>
               {ticket.imageUrl && (
                 <img
-                  src={ticket.imageUrl}
-                  alt="Exception"
+                  src={ticket.imageUrl || emptyImg}
+                  alt=""
                   className="w-full h-48 object-cover rounded mb-4"
+                  onError={e => {
+                    // fallback if imageUrl is broken
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = emptyImg;
+                  }}
                 />
               )}
               {/* Ticket details */}

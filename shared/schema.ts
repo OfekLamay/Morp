@@ -50,7 +50,7 @@ export const rules = pgTable("rules", {
   enforcement: text("enforcement").notNull(), // "ACTIVE", "SILENT"
   userCreated: text("user_created").notNull(),
   managerApproved: text("manager_approved").default(""),
-  importance: integer("importance").notNull(), // 1-10
+  severity: integer("severity").notNull(), // 1-10
   usersRelatedTo: json("users_related_to").$type<string[]>().default([]),
   enabled: boolean("enabled").default(true), // ENABLED/DISABLED
 });
@@ -66,15 +66,15 @@ export const tickets = pgTable("tickets", {
   creationDate: timestamp("creation_date").defaultNow(),
   expirationDate: timestamp("expiration_date").notNull(),
   userGatheredFrom: text("user_gathered_from").notNull(),
-  userManaging: text("user_managing").default(""),
+  userManaging: text("user_managing").default("not related yet"),
   relatedRulesList: json("related_rules_list").$type<number[]>().notNull(),
-  severity: integer("importance").notNull(),
+  severity: integer("severity").notNull(),
   usersRelatedTo: json("users_related_to").$type<string[]>().default([]),
-  status: text("status").notNull().default("waiting for identification"), // done, in progress, FP, waiting for identification, not related yet, reopened
+  status: text("status").notNull().default("not related yet"), // done, in progress, FP, waiting for identification, not related yet, reopened
   isTruePositive: boolean("is_true_positive").default(false), // FP/TP
   kabamRelated: text("kabam_related").default("need to be related"),
   unitRelated: text("unit_related").default("need to be related"),
-  imageUrl: text("image_url").default(""), // Add this line
+  imageUrl: text("image_url").default(""), // Path or URL to the image
 });
 
 export const insertTicketSchema = createInsertSchema(tickets).omit({
