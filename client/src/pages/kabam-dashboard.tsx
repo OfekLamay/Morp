@@ -18,6 +18,11 @@ import { formatDate, formatId } from "@/lib/utils";
 import { useTicketStats } from "@/hooks/use-tickets";
 import { useRulesPerformance } from "@/hooks/use-rules";
 
+import {
+  PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
+
 export default function KabamDashboard() {
   const [timePeriod, setTimePeriod] = useState("7"); // days
   
@@ -26,13 +31,32 @@ export default function KabamDashboard() {
   
   // Demo data for pie chart with more distinct colors
   const statusData = [
-    { name: "Done", value: stats?.statusDistribution?.done || 62, color: "#38BDF8" }, // Bright blue
-    { name: "In Progress", value: stats?.statusDistribution?.["in progress"] || 35, color: "#10B981" }, // Green
-    { name: "False Positive", value: stats?.statusDistribution?.["false positive"] || 23, color: "#F43F5E" }, // Pink/Red
-    { name: "Waiting", value: stats?.statusDistribution?.waiting || 16, color: "#FB923C" }, // Orange
-    { name: "Not Related Yet", value: stats?.statusDistribution?.["not related yet"] || 8, color: "#A855F7" } // Purple
+    { name: 'Done', value: 10, color: '#38BDF8' },
+    { name: 'In Progress', value: 8, color: '#10B981' },
+    { name: 'FP', value: 6, color: '#A855F7' },
+    { name: 'Waiting For Identification', value: 7, color: '#FB923C' },
+    { name: 'Not Yet', value: 5, color: '#F43F5E' },
+  ];
+
+  const ruleData = [
+    { rule: 'Location,Gaza,A', count: 2 },
+    { rule: 'Uniform,Soldier,B', count: 2 },
+    // ...more rules
   ];
   
+  const kabamData = [
+    { kabam: 'Kabam 98', count: 9 },
+    { kabam: 'Kabam 162', count: 9 },
+    { kabam: 'Kabam 122', count: 9 },
+    { kabam: 'Kabam 144', count: 9 },
+  ];
+
+  const severityData = [
+    { severity: 'Low (1-5)', count: 15 },
+    { severity: 'Medium (6-8)', count: 15 },
+    { severity: 'High (9-10)', count: 5 },
+  ];
+
   // Demo data for line chart
   const trendData = [
     { name: "May 9", "R001-TP": 8, "R001-FP": 2, "R002-TP": 6, "R002-FP": 3 },
@@ -194,6 +218,98 @@ export default function KabamDashboard() {
               xAxisLabel="Date"
             />
           </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Tickets by Status (Pie Chart) */}
+        <div className="bg-white rounded shadow p-4">
+          <h3 className="font-semibold mb-2">Tickets by Status</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'In Progress', value: 3, color: '#3b82f6' },
+                  { name: 'Not Yet', value: 3, color: '#f59e42' },
+                  { name: 'Waiting For Identification', value: 3, color: '#fbbf24' },
+                ]}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={70}
+                label
+              >
+                <Cell fill="#3b82f6" />
+                <Cell fill="#f59e42" />
+                <Cell fill="#fbbf24" />
+              </Pie>
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Tickets by Rule (Vertical Bar Chart) */}
+        <div className="bg-white rounded shadow p-4">
+          <h3 className="font-semibold mb-2">Tickets by Rule</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={[
+              { rule: 'Uniform.Soldier.B', count: 2 },
+              { rule: 'Location.WestBank.B', count: 2 },
+              { rule: 'Location.North.C', count: 2 },
+              { rule: 'Access to Restricted Site', count: 1 },
+              { rule: 'Unauthorized Upload', count: 1 },
+              { rule: 'Suspicious File Transfer', count: 1 },
+            ]}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="rule" angle={-45} textAnchor="end" interval={0} height={60} />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="count" fill="#2563eb" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Tickets per Unit (Horizontal Bar Chart) */}
+        <div className="bg-white rounded shadow p-4">
+          <h3 className="font-semibold mb-2">Tickets per Unit</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={[
+              { unit: 'Unit 81', count: 2 },
+              { unit: 'Unit 8200', count: 2 },
+              { unit: 'Unit 504', count: 2 },
+              { unit: 'Nahal', count: 2 },
+              { unit: 'Givaati', count: 1 },
+            ]} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis dataKey="unit" type="category" />
+              <Tooltip />
+              <Bar dataKey="count" fill="#2563eb" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Tickets by Severity (Vertical Bar Chart) */}
+        <div className="bg-white rounded shadow p-4">
+          <h3 className="font-semibold mb-2">Tickets by Severity</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={[
+              { severity: 'Low (1-5)', count: 3, color: '#3b82f6' },
+              { severity: 'Medium (6-8)', count: 3, color: '#fbbf24' },
+              { severity: 'High (9-10)', count: 3, color: '#ef4444' },
+            ]}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="severity" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="count">
+                <Cell fill="#3b82f6" />
+                <Cell fill="#fbbf24" />
+                <Cell fill="#ef4444" />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
