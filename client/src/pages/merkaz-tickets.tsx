@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
@@ -9,6 +9,15 @@ import { MoreHorizontal } from "lucide-react";
 import emptyImg from "../media/wow-such-empty.jpg";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
 
+function useAllUsers() {
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    fetch("/api/users")
+      .then(res => res.json())
+      .then(data => setUsers(data.users || []));
+  }, []);
+  return users;
+}
 
 const TICKET_STATUSES = [
   "done",
@@ -32,6 +41,11 @@ export default function MerkazTickets() {
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
+  const [assignTicket, setAssignTicket] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const allUsers = useAllUsers();
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -153,7 +167,15 @@ export default function MerkazTickets() {
                     <DropdownMenuItem onClick={() => handleViewDetails(ticket)}>
                       View Details
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => {/* TODO: Assign User */}}>Assign User</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setAssignTicket(ticket);
+                        setAssignModalOpen(true);
+                        setSelectedUsers(ticket.usersRelatedTo || []);
+                      }}
+                    >
+                      Assign User
+                    </DropdownMenuItem>
                     <DropdownMenuItem disabled>
                       Update Status
                     </DropdownMenuItem>
@@ -257,6 +279,55 @@ export default function MerkazTickets() {
               <div><span className="font-semibold">Kabam Related:</span> {selectedTicket.kabamRelated}</div>
               <div><span className="font-semibold">Unit Related:</span> {selectedTicket.unitRelated}</div>
             </div>
+          </div>
+        </div>
+      )}
+      {assignModalOpen && assignTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              onClick={() => setAssignModalOpen(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Who would you like to assign it to?</h2>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {allUsers
+                .filter(u => u.username !== assignTicket.userGatheredFrom) // Exclude monitored user
+                .map(user => (
+                  <label key={user.id} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedUsers.includes(user.username)}
+                      onChange={e => {
+                        setSelectedUsers(sel =>
+                          e.target.checked
+                            ? [...sel, user.username]
+                            : sel.filter(u => u !== user.username)
+                        );
+                      }}
+                    />
+                    <span>{user.username} ({user.role})</span>
+                  </label>
+                ))}
+            </div>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+              onClick={() => {
+                updateTicket.mutate(
+                  { id: assignTicket.id, usersRelatedTo: selectedUsers },
+                  {
+                    onSuccess: () => {
+                      setAssignModalOpen(false);
+                      if (typeof refetch === "function") refetch();
+                    }
+                  }
+                );
+              }}
+            >
+              Assign
+            </button>
           </div>
         </div>
       )}

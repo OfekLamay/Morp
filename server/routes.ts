@@ -295,6 +295,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/kabam-tickets/:id", async (req, res) => {
+    try {
+      const ticketId = parseInt(req.params.id);
+      // Only allow updating certain fields for safety
+      const allowedFields = [
+        "usersRelatedTo",
+        "status",
+        "isTruePositive",
+        "unitRelated",
+        "severity",
+        "expirationDate",
+        "imageUrl"
+        // add more fields as needed
+      ];
+      const updateData: Record<string, any> = {};
+      for (const key of allowedFields) {
+        if (req.body[key] !== undefined) {
+          updateData[key] = req.body[key];
+        }
+      }
+
+      const updatedTicket = await storage.updateTicket(ticketId, updateData);
+
+      if (!updatedTicket) {
+        return res.status(404).json({ message: "Ticket not found" });
+      }
+
+      res.json(updatedTicket);
+    } catch (error) {
+      console.error("Error updating kabam ticket:", error);
+      res.status(400).json({ message: "Invalid ticket data" });
+    }
+  });
+
   // Media routes
   app.post("/api/media", async (req, res) => {
     try {
