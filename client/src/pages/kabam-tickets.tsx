@@ -177,11 +177,13 @@ export default function KabamTickets() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tickets.map(ticket => (
             <div key={ticket.id} className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <div className="flex justify-between mb-2">
-                <StatusBadge status={ticket.status} />
-                <SeverityIndicator severity={ticket.severity} />
-              </div>
-              <div className="flex justify-end mb-2">
+              <div className="flex items-center justify-between mb-2">
+                {/* Left: Status above Severity */}
+                <div className="flex flex-col gap-1">
+                  <StatusBadge status={ticket.status} />
+                  <SeverityIndicator severity={ticket.severity} />
+                </div>
+                {/* Right: Actions */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
