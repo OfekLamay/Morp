@@ -21,6 +21,7 @@ interface RulesTableProps {
   page: number;
   onPageChange: (page: number) => void;
   pageSize?: number;
+  onViewDetails?: (rule: Rule) => void; // Add this
 }
 
 export default function RulesTable({
@@ -28,7 +29,8 @@ export default function RulesTable({
   totalCount,
   page,
   onPageChange,
-  pageSize = 10
+  pageSize = 10,
+  onViewDetails
 }: RulesTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
   const startItem = ((page - 1) * pageSize) + 1;
@@ -88,7 +90,9 @@ export default function RulesTable({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>View Details</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onViewDetails?.(rule)}>
+                        View Details
+                      </DropdownMenuItem>
                       <DropdownMenuItem>Edit Rule</DropdownMenuItem>
                       <DropdownMenuItem>
                         {rule.enabled ? 'Disable' : 'Enable'} Rule

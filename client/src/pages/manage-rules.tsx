@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import CreateRuleModal from "@/components/modals/create-rule-modal";
 import RulesTable from "@/components/tables/rules-table";
 import { useRules } from "@/hooks/use-rules";
+import RuleDetailsModal from "@/components/ui/RuleDetailsModal";
 
 export default function ManageRules() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -18,6 +19,8 @@ export default function ManageRules() {
   const [severityFilter, setSeverityFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const { rules, totalCount, isLoading } = useRules({
     search: searchTerm,
@@ -115,6 +118,10 @@ export default function ManageRules() {
           totalCount={totalCount}
           page={page}
           onPageChange={setPage}
+          onViewDetails={(rule) => {
+            setSelectedRule(rule);
+            setIsDetailsOpen(true);
+          }}
         />
       )}
       
@@ -122,6 +129,14 @@ export default function ManageRules() {
         open={showCreateModal}
         onOpenChange={setShowCreateModal}
       />
+
+      {selectedRule && (
+        <RuleDetailsModal
+          rule={selectedRule}
+          open={isDetailsOpen}
+          onOpenChange={setIsDetailsOpen}
+        />
+      )}
     </div>
   );
 }
