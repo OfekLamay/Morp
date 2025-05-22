@@ -253,7 +253,7 @@ export class MemStorage implements IStorage {
         isTruePositive: false,
         kabamRelated: "Kabam 162",
         unitRelated: "Unit 3412",
-        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE0ZEM0Spbv4-MtOZfsnptKosA4SUsYtyBuw&s"
+        imageUrl: "https://fastly.picsum.photos/id/29/4000/2670.jpg?hmac=rCbRAl24FzrSzwlR5tL-Aqzyu5tX_PA95VJtnUXegGU"
       },
       {
         userGatheredFrom: "user789",
