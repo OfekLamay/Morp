@@ -227,7 +227,7 @@ export class MemStorage implements IStorage {
         isTruePositive: true,
         kabamRelated: "Kabam A",
         unitRelated: "Unit 81",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+        imageUrl: "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68"
       },
       {
         userGatheredFrom: "user456",
@@ -240,7 +240,7 @@ export class MemStorage implements IStorage {
         isTruePositive: false,
         kabamRelated: "Kabam B",
         unitRelated: "Unit 8200",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+        imageUrl: "https://fastly.picsum.photos/id/16/2500/1667.jpg?hmac=uAkZwYc5phCRNFTrV_prJ_0rP0EdwJaZ4ctje2bY7aE"
       },
       {
         userGatheredFrom: "user623",
@@ -266,7 +266,7 @@ export class MemStorage implements IStorage {
         isTruePositive: false,
         kabamRelated: "Kabam C",
         unitRelated: "Unit 504",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Matrix-ASCII.jpg"
+        imageUrl: "/media/extractedimages/17-2500x1667.jpg"
       }
     ];
     

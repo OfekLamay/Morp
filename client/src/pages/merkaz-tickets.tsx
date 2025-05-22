@@ -6,8 +6,9 @@ import { useTickets } from "@/hooks/use-tickets";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
-import emptyImg from "../media/wow-such-empty.jpg";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
+
+const emptyImg = "/media/wow-such-empty.jpg";
 
 function useAllUsers() {
   const [users, setUsers] = useState([]);
@@ -27,6 +28,17 @@ const TICKET_STATUSES = [
   "not related yet",
   "reopened"
 ];
+
+// If ticket.imageUrl is a full URL, use as is.
+// If it's a local filename, prepend the public path.
+function getImageSrc(imageUrl: string | undefined) {
+  if (!imageUrl) return emptyImg;
+  if (/^https?:\/\//.test(imageUrl)) return imageUrl;
+  if (imageUrl.startsWith("/media/extractedimages/")) return imageUrl;
+  // Remove any leading slash and prepend the correct folder
+  const cleanName = imageUrl.replace(/^\/+/, "");
+  return `/media/extractedimages/${cleanName}`;
+}
 
 export default function MerkazTickets() {
   const [filters, setFilters] = useState({
@@ -238,11 +250,10 @@ export default function MerkazTickets() {
               </div>
               {ticket.imageUrl && (
                 <img
-                  src={ticket.imageUrl || emptyImg}
+                  src={getImageSrc(ticket.imageUrl)}
                   alt=""
                   className="w-full h-48 object-cover rounded mb-4"
                   onError={e => {
-                    // fallback if imageUrl is broken
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = emptyImg;
                   }}
@@ -282,7 +293,7 @@ export default function MerkazTickets() {
             </button>
             <h2 className="text-xl font-semibold mb-4">Ticket Details</h2>
             <img
-              src={selectedTicket.imageUrl || emptyImg}
+              src={getImageSrc(selectedTicket.imageUrl)}
               alt=""
               className="w-full h-48 object-cover rounded mb-4"
               onError={e => {
