@@ -46,7 +46,7 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
     defaultValues: {
       description: "",
       enforcement: "SILENT",
-      importance: 5,
+      severity: 5,
       itemsString: "",
       userCreated: "",
       managerApproved: "",
@@ -62,7 +62,7 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
     createRule.mutate({
       description: values.description,
       enforcement: values.enforcement,
-      importance: values.importance,
+      severity: values.severity,
       itemsList,
       userCreated: values.userCreated,
       managerApproved: values.managerApproved,
@@ -129,7 +129,7 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
             
             <FormField
               control={form.control}
-              name="importance"
+              name="severity"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Severity (1-10)</FormLabel>

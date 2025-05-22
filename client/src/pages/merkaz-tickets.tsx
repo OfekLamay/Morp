@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
 import { useTickets } from "@/hooks/use-tickets";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import emptyImg from "../media/wow-such-empty.jpg";
@@ -68,6 +68,25 @@ export default function MerkazTickets() {
     setIsModalOpen(true);
   }
 
+  const kabamOptions = Array.from(
+    new Set(tickets.map(ticket => ticket.kabamRelated).filter(Boolean))
+  );
+
+  const ruleOptions = Array.from(
+    new Set(
+      tickets
+        .flatMap(ticket => ticket.relatedRulesList || [])
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a - b); // Sort numerically if rules are numbers
+
+  useEffect(() => {
+    if (typeof refetch === "function") {
+      refetch();
+    }
+    // Optionally, add dependencies if you want to refetch on filter change, etc.
+  }, []); // Empty array = only on mount
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -104,9 +123,9 @@ export default function MerkazTickets() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All kabams</SelectItem>
-              <SelectItem value="Kabam A">Kabam A</SelectItem>
-              <SelectItem value="Kabam B">Kabam B</SelectItem>
-              <SelectItem value="Kabam C">Kabam C</SelectItem>
+              {kabamOptions.map(kabam => (
+                <SelectItem key={kabam} value={kabam}>{kabam}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -119,10 +138,11 @@ export default function MerkazTickets() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All rules</SelectItem>
-              <SelectItem value="1">R001</SelectItem>
-              <SelectItem value="2">R002</SelectItem>
-              <SelectItem value="3">R003</SelectItem>
-              <SelectItem value="4">R004</SelectItem>
+              {ruleOptions.map(rule => (
+                <SelectItem key={rule} value={String(rule)}>
+                  {`R${String(rule).padStart(3, "0")}`}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -176,18 +196,21 @@ export default function MerkazTickets() {
                     >
                       Assign User
                     </DropdownMenuItem>
-                    <DropdownMenuItem disabled>
-                      Update Status
-                    </DropdownMenuItem>
-                    {TICKET_STATUSES.map(status => (
-                      <DropdownMenuItem
-                        key={status}
-                        onClick={() => handleUpdateStatus(ticket.id, status)}
-                        inset
-                      >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </DropdownMenuItem>
-                    ))}
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        Update Status
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        {TICKET_STATUSES.map(status => (
+                          <DropdownMenuItem
+                            key={status}
+                            onClick={() => handleUpdateStatus(ticket.id, status)}
+                          >
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
                     <DropdownMenuItem
                       onClick={() =>
                         updateTicket.mutate(

@@ -9,6 +9,11 @@ import { MoreHorizontal } from "lucide-react";
 import emptyImg from "../media/wow-such-empty.jpg";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
 import { toast } from "@/hooks/use-toast"; 
+import {
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
+} from "@/components/ui/dropdown-menu";
 
 const TICKET_STATUSES = [
   "done",
@@ -69,6 +74,25 @@ export default function KabamTickets() {
     setIsModalOpen(true);
   }
 
+  const unitOptions = Array.from(
+    new Set(tickets.map(ticket => ticket.unitRelated).filter(Boolean))
+  );
+
+  const ruleOptions = Array.from(
+    new Set(
+      tickets
+        .flatMap(ticket => ticket.relatedRulesList || [])
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a - b); // Sort numerically if rules are numbers
+
+  useEffect(() => {
+    if (typeof refetch === "function") {
+      refetch();
+    }
+    // Optionally, add dependencies if you want to refetch on filter change, etc.
+  }, []); // Empty array = only on mount
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -105,10 +129,9 @@ export default function KabamTickets() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All units</SelectItem>
-              <SelectItem value="Unit 1">Unit 1</SelectItem>
-              <SelectItem value="Unit 2">Unit 2</SelectItem>
-              <SelectItem value="Unit 3">Unit 3</SelectItem>
-              <SelectItem value="Unit 4">Unit 4</SelectItem>
+              {unitOptions.map(unit => (
+                <SelectItem key={unit} value={unit}>{unit}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -121,10 +144,11 @@ export default function KabamTickets() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All rules</SelectItem>
-              <SelectItem value="1">R001</SelectItem>
-              <SelectItem value="2">R002</SelectItem>
-              <SelectItem value="3">R003</SelectItem>
-              <SelectItem value="4">R004</SelectItem>
+              {ruleOptions.map(rule => (
+                <SelectItem key={rule} value={String(rule)}>
+                  {`R${String(rule).padStart(3, "0")}`}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           
@@ -178,18 +202,21 @@ export default function KabamTickets() {
                     >
                       Assign User
                     </DropdownMenuItem>
-                    <DropdownMenuItem disabled>
-                      Update Status
-                    </DropdownMenuItem>
-                    {TICKET_STATUSES.map(status => (
-                      <DropdownMenuItem
-                        key={status}
-                        onClick={() => handleUpdateStatus(ticket.id, status)}
-                        inset
-                      >
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </DropdownMenuItem>
-                    ))}
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        Update Status
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent>
+                        {TICKET_STATUSES.map(status => (
+                          <DropdownMenuItem
+                            key={status}
+                            onClick={() => handleUpdateStatus(ticket.id, status)}
+                          >
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
                     <DropdownMenuItem
                       onClick={() =>
                         updateTicket.mutate(

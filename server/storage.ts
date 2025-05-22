@@ -220,7 +220,7 @@ export class MemStorage implements IStorage {
         userGatheredFrom: "user123",
         userManaging: "admin1",
         creationDate: new Date(),
-        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 4 * 60 * 60 * 1000),
         relatedRulesList: [1],
         severity: 9,
         status: "done",
@@ -232,8 +232,8 @@ export class MemStorage implements IStorage {
       {
         userGatheredFrom: "user456",
         userManaging: "admin2",
-        creationDate: new Date(),
-        expirationDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        creationDate: new Date("2025-05-19T15:42:19"),
+        expirationDate: new Date(new Date("2025-05-19T15:42:19").getTime() + 10 * 60 * 60 * 1000),
         relatedRulesList: [2],
         severity: 6,
         status: "in progress",
@@ -246,7 +246,7 @@ export class MemStorage implements IStorage {
         userGatheredFrom: "user623",
         userManaging: "admin7",
         creationDate: new Date(Date.now() - 3 * 60 * 60 * 1000),
-        expirationDate: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 4 * 60 * 60 * 1000),
         relatedRulesList: [2],
         severity: 9,
         status: "in progress",
@@ -259,7 +259,7 @@ export class MemStorage implements IStorage {
         userGatheredFrom: "user789",
         userManaging: "admin3",
         creationDate: new Date(),
-        expirationDate: new Date(Date.now() + 72 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
         relatedRulesList: [3],
         severity: 3,
         status: "false positive",
@@ -758,13 +758,29 @@ export class MemStorage implements IStorage {
   async createTicket(insertTicket: InsertTicket): Promise<Ticket> {
     const id = this.ticketCurrentId++;
     const now = new Date();
+    const severity = insertTicket.severity ?? 1;
+
+    // Determine expiration offset based on severity
+    let expirationOffsetMs = 24 * 60 * 60 * 1000; // default 24 hours
+    if (severity >= 6 && severity <= 8) {
+      expirationOffsetMs = 10 * 60 * 60 * 1000; // 10 hours
+    } else if (severity >= 9 && severity <= 10) {
+      expirationOffsetMs = 4 * 60 * 60 * 1000; // 4 hours
+    }
+
+    const creationDate = insertTicket.creationDate ? new Date(insertTicket.creationDate) : now;
+    const expirationDate = insertTicket.expirationDate
+      ? new Date(insertTicket.expirationDate)
+      : new Date(creationDate.getTime() + expirationOffsetMs);
+
     const ticket: Ticket = { 
       ...insertTicket, 
       id,
-      creationDate: now,
+      creationDate,
+      expirationDate,
       status: insertTicket.status || "waiting for identification",
-      isTruePositive: insertTicket.isTruePositive || false,
-      userManaging: insertTicket.userManaging || "",
+      isTruePositive: insertTicket.isTruePositive || true,
+      userManaging: insertTicket.userManaging || "need to be related",
       usersRelatedTo: insertTicket.usersRelatedTo || [],
       kabamRelated: insertTicket.kabamRelated || "need to be related",
       unitRelated: insertTicket.unitRelated || "need to be related"
