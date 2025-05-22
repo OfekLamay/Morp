@@ -135,6 +135,7 @@ export default function ManageRules() {
             setEditRule(rule);
             setIsEditOpen(true);
           }}
+          onDeleteRule={handleDeleteRule}
         />
       )}
       
