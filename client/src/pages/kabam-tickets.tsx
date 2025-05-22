@@ -6,7 +6,6 @@ import { useTickets } from "@/hooks/use-tickets";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
-import emptyImg from "../media/wow-such-empty.jpg";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
 import { toast } from "@/hooks/use-toast"; 
 import {
@@ -24,6 +23,8 @@ const TICKET_STATUSES = [
   "reopened"
 ];
 
+const emptyImg = "/media/wow-such-empty.jpg";
+
 function useAllUsers() {
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -32,6 +33,15 @@ function useAllUsers() {
       .then(data => setUsers(data.users || []));
   }, []);
   return users;
+}
+
+function getImageSrc(imageUrl: string | undefined) {
+  if (!imageUrl) return emptyImg;
+  if (/^https?:\/\//.test(imageUrl)) return imageUrl;
+  if (imageUrl.startsWith("/media/extractedimages/")) return imageUrl;
+  // Remove any leading slash and prepend the correct folder
+  const cleanName = imageUrl.replace(/^\/+/, "");
+  return `/media/extractedimages/${cleanName}`;
 }
 
 export default function KabamTickets() {
@@ -244,11 +254,10 @@ export default function KabamTickets() {
               </div>
               {ticket.imageUrl && (
                 <img
-                  src={ticket.imageUrl || emptyImg}
+                  src={getImageSrc(ticket.imageUrl)}
                   alt=""
                   className="w-full h-48 object-cover rounded mb-4"
                   onError={e => {
-                    // fallback if imageUrl is broken
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = emptyImg;
                   }}
@@ -289,7 +298,7 @@ export default function KabamTickets() {
             </button>
             <h2 className="text-xl font-semibold mb-4">Ticket Details</h2>
             <img
-              src={selectedTicket.imageUrl || emptyImg}
+              src={getImageSrc(selectedTicket.imageUrl)}
               alt=""
               className="w-full h-48 object-cover rounded mb-4"
               onError={e => {
