@@ -42,6 +42,7 @@ export default function RulesTable({
             <TableRow>
               <TableHead className="font-medium text-muted-foreground">ID</TableHead>
               <TableHead className="font-medium text-muted-foreground">Enforcement</TableHead>
+              <TableHead className="font-medium text-muted-foreground">Status</TableHead>
               <TableHead className="font-medium text-muted-foreground">Description</TableHead>
               <TableHead className="font-medium text-muted-foreground">Severity</TableHead>
               <TableHead className="font-medium text-muted-foreground">Submitter</TableHead>
@@ -61,6 +62,13 @@ export default function RulesTable({
                     status={rule.enabled ? rule.enforcement : "Disabled"} 
                     type="enforcement" 
                   />
+                </TableCell>
+                <TableCell>
+                  {rule.enabled ? (
+                    <span className="text-green-600 font-semibold">Enabled</span>
+                  ) : (
+                    <span className="text-red-500 font-semibold">Disabled</span>
+                  )}
                 </TableCell>
                 <TableCell>{rule.description}</TableCell>
                 <TableCell>
