@@ -22,6 +22,8 @@ interface RulesTableProps {
   onPageChange: (page: number) => void;
   pageSize?: number;
   onViewDetails?: (rule: Rule) => void; // Add this
+  onEditRule?: (rule: Rule) => void; // Add this
+  onDeleteRule?: (rule: Rule) => void; // Add this
 }
 
 export default function RulesTable({
@@ -30,7 +32,9 @@ export default function RulesTable({
   page,
   onPageChange,
   pageSize = 10,
-  onViewDetails
+  onViewDetails,
+  onEditRule,
+  onDeleteRule
 }: RulesTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
   const startItem = ((page - 1) * pageSize) + 1;
@@ -93,14 +97,13 @@ export default function RulesTable({
                       <DropdownMenuItem onClick={() => onViewDetails?.(rule)}>
                         View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Edit Rule</DropdownMenuItem>
-                      <DropdownMenuItem>
-                        {rule.enabled ? 'Disable' : 'Enable'} Rule
+                      <DropdownMenuItem onClick={() => onEditRule?.(rule)}>
+                        Edit Rule
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Change Enforcement
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => onDeleteRule?.(rule)}
+                      >
                         Delete Rule
                       </DropdownMenuItem>
                     </DropdownMenuContent>

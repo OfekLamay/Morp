@@ -45,16 +45,12 @@ export function useRules(filters?: Record<string, string | number>) {
 
   // Update an existing rule
   const updateRule = useMutation({
-    mutationFn: async ({ id, ...ruleData }: Partial<Rule> & { id: number }) => {
-      const res = await apiRequest("PATCH", `${endpoint}/${id}`, ruleData);
+    mutationFn: async (update: { id: number; description: string; enforcement: string; severity: number; enabled: boolean }) => {
+      const res = await apiRequest("PATCH", `/api/rules/${update.id}`, update);
       return await res.json();
     },
-    onSuccess: (_, variables) => {
-      toast({
-        title: "Rule updated",
-        description: `Rule ${variables.id} has been successfully updated`,
-      });
-      queryClient.invalidateQueries({ queryKey: [endpoint] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith("/api/rules") });
     },
     onError: (error) => {
       toast({
@@ -68,15 +64,10 @@ export function useRules(filters?: Record<string, string | number>) {
   // Delete a rule
   const deleteRule = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `${endpoint}/${id}`);
-      return id;
+      await apiRequest("DELETE", `/api/rules/${id}`);
     },
-    onSuccess: (id) => {
-      toast({
-        title: "Rule deleted",
-        description: `Rule ${id} has been successfully deleted`,
-      });
-      queryClient.invalidateQueries({ queryKey: [endpoint] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith("/api/rules") });
     },
     onError: (error) => {
       toast({

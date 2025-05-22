@@ -11,6 +11,7 @@ import CreateRuleModal from "@/components/modals/create-rule-modal";
 import RulesTable from "@/components/tables/rules-table";
 import { useRules } from "@/hooks/use-rules";
 import RuleDetailsModal from "@/components/ui/RuleDetailsModal";
+import EditRuleModal from "@/components/ui/EditRuleModal";
 
 export default function ManageRules() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -21,8 +22,10 @@ export default function ManageRules() {
   const [page, setPage] = useState(1);
   const [selectedRule, setSelectedRule] = useState<Rule | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [editRule, setEditRule] = useState<Rule | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const { rules, totalCount, isLoading } = useRules({
+  const { rules, totalCount, isLoading, deleteRule } = useRules({
     search: searchTerm,
     enforcement: enforcementFilter,
     severity: severityFilter,
@@ -34,6 +37,12 @@ export default function ManageRules() {
     e.preventDefault();
     setPage(1); // Reset to first page on new search
   };
+
+  function handleDeleteRule(rule: Rule) {
+    if (window.confirm(`Are you sure you want to delete rule "${rule.description}"?`)) {
+      deleteRule.mutate(rule.id);
+    }
+  }
 
   return (
     <div>
@@ -122,6 +131,10 @@ export default function ManageRules() {
             setSelectedRule(rule);
             setIsDetailsOpen(true);
           }}
+          onEditRule={(rule) => {
+            setEditRule(rule);
+            setIsEditOpen(true);
+          }}
         />
       )}
       
@@ -137,6 +150,12 @@ export default function ManageRules() {
           onOpenChange={setIsDetailsOpen}
         />
       )}
+
+      <EditRuleModal
+        rule={editRule}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+      />
     </div>
   );
 }
