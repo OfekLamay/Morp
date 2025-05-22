@@ -249,15 +249,22 @@ export default function MerkazTickets() {
                 </DropdownMenu>
               </div>
               {ticket.imageUrl && (
-                <img
-                  src={getImageSrc(ticket.imageUrl)}
-                  alt=""
-                  className="w-full h-48 object-cover rounded mb-4"
-                  onError={e => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = emptyImg;
-                  }}
-                />
+                <a
+                  href={getImageSrc(ticket.imageUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1} // Prevents tab focus on the link if you want only the image focusable
+                >
+                  <img
+                    src={getImageSrc(ticket.imageUrl)}
+                    alt=""
+                    className="w-full h-48 object-cover rounded mb-4 cursor-pointer"
+                    onError={e => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = emptyImg;
+                    }}
+                  />
+                </a>
               )}
               {/* Ticket */}
               <div className="flex flex-col gap-2 text-muted-foreground">
