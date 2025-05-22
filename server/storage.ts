@@ -193,7 +193,7 @@ export class MemStorage implements IStorage {
         creationDate: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000),
         itemsList: ["phone", "laptop", "wifi"],
         description: "Monitor high-risk communications",
-        enforcement: "ACTIVE",
+        enforcement: "SILENT",
         userCreated: "sjohnson",
         managerApproved: "jsmith",
         severity: 9,
@@ -470,6 +470,18 @@ export class MemStorage implements IStorage {
     
     return rules.length;
   }
+
+  /*
+  creationDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        itemsList: ["shoes", "jeans", "t-shirt"],
+        description: "Detect suspicious location patterns",
+        enforcement: "ACTIVE",
+        userCreated: "jsmith",
+        managerApproved: "sjohnson",
+        severity: 8,
+        usersRelatedTo: ["dlee", "sjohnson"],
+        enabled: true,
+   */
 
   async createRule(insertRule: InsertRule): Promise<Rule> {
     const id = this.ruleCurrentId++;

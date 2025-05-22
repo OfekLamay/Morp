@@ -36,16 +36,16 @@ export default function Navbar() {
             {/* Desktop Navigation Links */}
             <div className="hidden md:ml-6 md:flex md:space-x-2">
               {navItems.map((item) => (
-                <Link key={item.path} href={item.path}>
-                  <a
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location === item.path
-                        ? " border-b-2 border-primary"
-                        : " hover:"
-                    }`}
-                  >
-                    {item.label}
-                  </a>
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                    location === item.path
+                      ? " border-b-2 border-primary"
+                      : " hover:"
+                  }`}
+                >
+                  {item.label}
                 </Link>
               ))}
             </div>
@@ -89,17 +89,17 @@ export default function Navbar() {
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
-              <Link key={item.path} href={item.path}>
-                <a
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    location === item.path
-                      ? " bg-gray-900"
-                      : " hover: hover:bg-gray-700"
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
+                  location === item.path
+                    ? " bg-gray-900"
+                    : " hover: hover:bg-gray-700"
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
               </Link>
             ))}
           </div>

@@ -31,7 +31,8 @@ export function useRules(filters?: Record<string, string | number>) {
         title: "Rule created",
         description: "The new rule has been successfully created",
       });
-      queryClient.invalidateQueries({ queryKey: [endpoint] });
+      // Invalidate all queries starting with /api/rules
+      queryClient.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith("/api/rules") });
     },
     onError: (error) => {
       toast({

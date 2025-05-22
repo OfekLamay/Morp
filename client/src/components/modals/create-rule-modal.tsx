@@ -32,15 +32,22 @@ interface CreateRuleModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const formSchema = insertRuleSchema.extend({
+const formSchema = z.object({
+  description: z.string().min(1, "Required"),
+  enforcement: z.enum(["SILENT", "ACTIVE"]),
+  severity: z.number().min(1).max(10),
   itemsString: z.string().min(1, "Required"),
+  userCreated: z.string().min(1, "Required"),
+  managerApproved: z.string().optional(),
+  usersRelatedTo: z.array(z.string()).optional(),
+  enabled: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalProps) {
+  console.log("Rendering CreateRuleModal");
   const { createRule } = useRules();
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,9 +63,8 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
   });
 
   function onSubmit(values: FormValues) {
-    // Convert comma-separated string to array
+    console.log("Create Rule button clicked, submitting values:", values);
     const itemsList = values.itemsString.split(',').map(item => item.trim());
-
     createRule.mutate({
       description: values.description,
       enforcement: values.enforcement,
@@ -78,7 +84,7 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-card ">
+      <DialogContent className="sm:max-w-[500px] bg-card max-h-[420px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-medium">Create New Rule</DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -87,7 +93,11 @@ export default function CreateRuleModal({ open, onOpenChange }: CreateRuleModalP
         </DialogHeader>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)} 
+            onInvalid={() => console.log("Form validation failed!")}
+            className="space-y-4 pt-2"
+          >
             <FormField
               control={form.control}
               name="description"

@@ -110,6 +110,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/rules", async (req, res) => {
+    console.log("Received POST /api/rules with body:", req.body);
     try {
       const ruleData = insertRuleSchema.parse(req.body);
       const newRule = await storage.createRule(ruleData);
