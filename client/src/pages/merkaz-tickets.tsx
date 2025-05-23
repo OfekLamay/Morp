@@ -211,15 +211,22 @@ export default function MerkazTickets() {
                 <SeverityIndicator severity={ticket.severity} />
               </div>
               {ticket.imageUrl && (
-                <img
-                  src={getImageSrc(ticket.imageUrl)}
-                  alt=""
-                  className="w-full h-48 object-cover rounded mb-4"
-                  onError={e => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = emptyImg;
-                  }}
-                />
+                <a
+                  href={getImageSrc(ticket.imageUrl)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={-1}
+                >
+                  <img
+                    src={getImageSrc(ticket.imageUrl)}
+                    alt=""
+                    className="w-full h-48 object-cover rounded mb-4 cursor-pointer"
+                    onError={e => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = emptyImg;
+                    }}
+                  />
+                </a>
               )}
               {/* Ticket */}
               <div className="flex flex-col gap-2 text-muted-foreground">
