@@ -27,7 +27,7 @@ export default function UsersTable({
   totalCount,
   page,
   onPageChange,
-  pageSize = 10
+  pageSize = 20
 }: UsersTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
   const startItem = ((page - 1) * pageSize) + 1;

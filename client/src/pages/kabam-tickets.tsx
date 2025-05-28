@@ -35,6 +35,43 @@ function useAllUsers() {
   return users;
 }
 
+// Given a kabam user and all units:
+/*
+function getAccessibleUnits(user, allUnits) {
+  // Start with their unit and unitsUnder
+  let units = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+  // Recursively add all descendant units
+  // ...implement recursive logic if needed...
+  return units;
+}
+
+// When fetching tickets:
+const accessibleUnits = getAccessibleUnits(user, allUnits);
+const tickets = db.tickets.find({ unitRelated: { $in: accessibleUnits } });
+
+function getAllDescendantUnits(unit: string, allUnits: { unit: string, parentUnit: string }[]): string[] {
+  const directChildren = allUnits.filter(u => u.parentUnit === unit).map(u => u.unit);
+  return directChildren.reduce(
+    (acc, child) => acc.concat(child, getAllDescendantUnits(child, allUnits)),
+    [] as string[]
+  );
+}
+
+// Usage:
+const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+const allUnits = await db.units.findMany(); // however you fetch all units
+const accessibleUnits = userUnits.flatMap(unit => [unit, ...getAllDescendantUnits(unit, allUnits)]);
+const tickets = await db.tickets.findMany({ where: { unitRelated: { $in: accessibleUnits } } });
+
+// Example: pass units as filter to useTickets
+const { user } = useUser();
+const units = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+// Pass units to your useTickets hook or API call
+const { tickets } = useTickets({ units });
+
+
+*/
+
 function getImageSrc(imageUrl: string | undefined) {
   if (!imageUrl) return emptyImg;
   if (/^https?:\/\//.test(imageUrl)) return imageUrl;
@@ -64,7 +101,7 @@ export default function KabamTickets() {
   });
 
   const [page, setPage] = useState(1);
-  const { tickets, totalCount, isLoading, updateTicket, refetch } = useTickets({ ...filters, page }, false);
+  const { tickets, totalCount, isLoading, updateTicket, refetch } = useTickets({ ...filters, page, limit: 20  }, false);
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

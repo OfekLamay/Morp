@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
+import { useUser } from "@/context/UserContext";
 import { useTickets } from "@/hooks/use-tickets";
 
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,12 @@ function getImageSrc(imageUrl: string | undefined) {
   return `/media/extractedimages/${cleanName}`;
 }
 
+const pageSize = 20; // or any number you want
+
 export default function MerkazTickets() {
+  const { user } = useUser();
+  const isMerkaz = user.permissionGroup === "Merkaz Nitur" || user.permissionGroup === "System Administrator";
+
   const [filters, setFilters] = useState({
     status: "all",
     kabam: "all",
@@ -59,7 +65,10 @@ export default function MerkazTickets() {
   });
 
   const [page, setPage] = useState(1);
-  const { tickets, totalCount, isLoading, updateTicket, refetch } = useTickets({ ...filters, page }, true);
+  const { tickets, totalCount, isLoading, refetch, updateTicket } = useTickets(
+    { ...filters, page, limit: pageSize },
+    isMerkaz
+  );
 
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

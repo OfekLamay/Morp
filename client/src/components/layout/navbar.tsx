@@ -89,6 +89,15 @@ export default function Navbar() {
                       {user.kabam && <div className="mb-1"><b>Kabam/Unit:</b> {user.kabam}</div>}
                       {user.unit && <div className="mb-1"><b>Unit:</b> {user.unit}</div>}
                       {user.parentUnit && <div className="mb-1"><b>Parent Unit:</b> {user.parentUnit}</div>}
+                      {user.permissionGroup === "Kabam" && (
+                        <>
+                          <div className="mb-1"><b>Kabam:</b> {user.kabam}</div>
+                          <div className="mb-1"><b>Unit:</b> {user.unit}</div>
+                          <div className="mb-1"><b>Units Under:</b> {user.unitsUnder}</div>
+                          <div className="mb-1"><b>Parent Unit:</b> {user.parentUnit}</div>
+                          <div className="mb-1"><b>Manager:</b> {user.isManager ? "Yes" : "No"}</div>
+                        </>
+                      )}
                       <button
                         className="mt-2 w-full bg-red-500 text-white py-1 rounded"
                         onClick={logout}

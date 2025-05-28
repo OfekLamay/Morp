@@ -12,9 +12,11 @@ export const users = pgTable("users", {
   permissionGroup: text("permission_group").notNull(), // "Merkaz", "Kabam", "System Administrator"
   isManager: boolean("is_manager").default(false),
   kabam: text("kabam").default(""),
+  unit: text("unit").default(""),
+  unitsUnder: text("units_under").default(""),
+  parentUnit: text("parent_unit").default(""),
   lastLogin: timestamp("last_login"),
   ticketsManaging: integer("tickets_managing").default(0),
-  unitsUnder: text("units_under").default(""),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -23,6 +25,21 @@ export const insertUserSchema = createInsertSchema(users).omit({
   lastLogin: true,
   createdAt: true,
 });
+
+/*
+{
+  id: 2,
+  username: "kabamuser1",
+  fullName: "David Cohen",
+  permissionGroup: "Kabam",
+  isManager: true,
+  kabam: "Kabam 98",
+  unit: "Unit 98",
+  unitsUnder: "Unit 98,Unit 8200", // or as an array
+  parentUnit: "Unit 81",
+  // ...other fields
+}
+*/
 
 // Media database
 export const media = pgTable("media", {
@@ -94,3 +111,10 @@ export type InsertRule = z.infer<typeof insertRuleSchema>;
 
 export type Ticket = typeof tickets.$inferSelect;
 export type InsertTicket = z.infer<typeof insertTicketSchema>;
+
+// Unit table (example, if you have one)
+export const units = pgTable("units", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  parentUnit: text("parent_unit").default(""),
+});

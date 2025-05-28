@@ -22,6 +22,18 @@ export default function UserManagement() {
     setPage(1); // Reset to first page on new search
   };
 
+  /*
+  {permissionGroup === "Kabam" && (
+          <>
+            <Input label="Kabam" {...register("kabam")} />
+            <Input label="Unit" {...register("unit")} />
+            <Input label="Units Under" {...register("unitsUnder")} />
+            <Input label="Parent Unit" {...register("parentUnit")} />
+            <Checkbox label="Is Manager" {...register("isManager")} />
+          </>
+        )}
+  */
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -75,6 +87,7 @@ export default function UserManagement() {
           totalCount={totalCount}
           page={page}
           onPageChange={setPage}
+          pageSize={20}
         />
       )}
     </div>

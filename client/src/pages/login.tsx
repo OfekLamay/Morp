@@ -9,7 +9,22 @@ export default function Login() {
   // For demo: mock user data
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In real app, call your backend here and get user info + token
+    // For demo: login as Kabam user if username starts with "kabam"
+    if (username.startsWith("kabam")) {
+      login({
+        id: "2",
+        username,
+        fullName: "David Cohen",
+        permissionGroup: "Kabam",
+        isManager: true,
+        kabam: "Kabam 98",
+        unit: "Unit 98",
+        unitsUnder: "Unit 98,Unit 8200",
+        parentUnit: "Unit 81",
+        token: "mock-token",
+      });
+      return;
+    }
     login({
       id: "1",
       username,

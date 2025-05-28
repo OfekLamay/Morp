@@ -30,7 +30,7 @@ export default function TicketsTable({
   totalCount,
   page,
   onPageChange,
-  pageSize = 10,
+  pageSize = 20,
   isMerkaz = true
 }: TicketsTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);

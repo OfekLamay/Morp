@@ -5,11 +5,21 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
+/*
 if (!process.env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?",
   );
 }
+*/
 
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema });
+
+export function getAllDescendantUnits(unit: string, allUnits: { unit: string, parentUnit: string }[]): string[] {
+  const directChildren = allUnits.filter(u => u.parentUnit === unit).map(u => u.unit);
+  return directChildren.reduce(
+    (acc, child) => acc.concat(child, getAllDescendantUnits(child, allUnits)),
+    [] as string[]
+  );
+}

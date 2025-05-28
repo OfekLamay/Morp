@@ -8,6 +8,8 @@ import {
   tickets, insertTicketSchema,
   media, insertMediaSchema
 } from "@shared/schema";
+import { getAllDescendantUnits } from "./db";
+import { db } from "./db";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes
@@ -181,10 +183,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Ticket routes - Merkaz
   app.get("/api/merkaz-tickets", async (req, res) => {
     try {
-      const { status, kabam, rule, severity, page = "1", limit = "10" } = req.query as Record<string, string>;
+      const { status, kabam, rule, severity, page = "1", limit = "20" } = req.query as Record<string, string>;
       const skip = (parseInt(page) - 1) * parseInt(limit);
       
-      const ticketsList = await storage.getMerkazTickets({ status, kabam, rule, severity, skip, limit: parseInt(limit) });
+      const user = req.user; // however you get the logged-in user
+      const ticketsList = await storage.getMerkazTickets({ status, kabam, rule, severity, skip, limit: parseInt(limit) }, user);
       const totalCount = await storage.getMerkazTicketsCount({ status, kabam, rule, severity });
 
       // Explicitly include imageUrl in the response
@@ -366,6 +369,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching media:", error);
       res.status(500).json({ message: "Failed to fetch media" });
     }
+  });
+
+  // Tickets route - Combined
+  app.get("/api/tickets", async (req, res) => {
+    const user = req.user; // however you get the logged-in user
+    const allUnits = await db.units.findMany(); // get all units
+
+    let accessibleUnits: string[] = [];
+
+    if (user.permissionGroup === "Kabam") {
+      const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+      accessibleUnits = userUnits.flatMap(unit => [unit, ...getAllDescendantUnits(unit, allUnits)]);
+    } else if (user.permissionGroup === "Merkaz Nitur") {
+      accessibleUnits = allUnits.map(u => u.unit); // Merkaz sees all
+    } else if (user.permissionGroup === "System Administrator") {
+      accessibleUnits = []; // or whatever logic you want
+    }
+
+    // Now filter tickets
+    let tickets;
+    if (accessibleUnits.length > 0) {
+      tickets = await db.tickets.findMany({
+        where: { unitRelated: { $in: accessibleUnits } }
+      });
+    } else {
+      tickets = await db.tickets.findMany();
+    }
+
+    res.json({ tickets });
+  });
+
+  app.get("/api/my-units", async (req, res) => {
+    const user = req.user;
+    const allUnits = await db.units.findMany();
+
+    let accessibleUnits: string[] = [];
+    if (user.permissionGroup === "Kabam") {
+      const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+      accessibleUnits = userUnits.flatMap(unit => [unit, ...getAllDescendantUnits(unit, allUnits)]);
+    }
+    res.json({ units: accessibleUnits });
   });
 
   const httpServer = createServer(app);

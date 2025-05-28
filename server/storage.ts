@@ -162,6 +162,28 @@ export class MemStorage implements IStorage {
         unitsUnder: "",
       },
       {
+        fullName: "Merkaz Manager",
+        username: "merkazmanager",
+        email: "merkazmanager@example.com",
+        password: "password123",
+        permissionGroup: "Merkaz Nitur",
+        isManager: true,
+        kabam: "",
+        ticketsManaging: 0,
+        unitsUnder: "",
+      },
+      {
+        fullName: "System Admin",
+        username: "sysadmin",
+        email: "sysadmin@example.com",
+        password: "password123",
+        permissionGroup: "System Administrator",
+        isManager: true,
+        kabam: "",
+        ticketsManaging: 0,
+        unitsUnder: "",
+      },
+      {
         fullName: "David Lee",
         username: "dlee",
         email: "dlee@example.com",
@@ -271,6 +293,38 @@ export class MemStorage implements IStorage {
     ];
     
     demoTickets.forEach(ticket => this.createTicket(ticket));
+
+    // Add 10 tickets for Kabam 98 (Unit 98 and Unit 8200)
+    const kabam98Tickets = [
+      ...Array.from({ length: 5 }).map((_, i) => ({
+        userGatheredFrom: `kabam98_user${i + 1}`,
+        userManaging: "kabam98_manager",
+        creationDate: new Date(Date.now() - i * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + (i + 1) * 4 * 60 * 60 * 1000),
+        relatedRulesList: [1],
+        severity: 7 + (i % 4), // 7,8,9,10,7
+        status: ["in progress", "done", "waiting for identification", "fp", "not related yet"][i % 5],
+        isTruePositive: i % 2 === 0,
+        kabamRelated: "Kabam 98",
+        unitRelated: "Unit 98",
+        imageUrl: `https://picsum.photos/seed/kabam98_${i}/400/300`
+      })),
+      ...Array.from({ length: 5 }).map((_, i) => ({
+        userGatheredFrom: `kabam8200_user${i + 1}`,
+        userManaging: "kabam98_manager",
+        creationDate: new Date(Date.now() - (i + 5) * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + (i + 6) * 4 * 60 * 60 * 1000),
+        relatedRulesList: [2],
+        severity: 6 + (i % 5), // 6,7,8,9,10
+        status: ["done", "in progress", "waiting for identification", "fp", "not related yet"][i % 5],
+        isTruePositive: i % 2 !== 0,
+        kabamRelated: "Kabam 98",
+        unitRelated: "Unit 8200",
+        imageUrl: `https://picsum.photos/seed/kabam8200_${i}/400/300`
+      })),
+    ];
+
+    kabam98Tickets.forEach(ticket => this.createTicket(ticket));
   }
 
   // User methods
@@ -619,23 +673,27 @@ export class MemStorage implements IStorage {
     return this.ticketsData.get(id);
   }
 
-  async getMerkazTickets(filters: TicketsFilter = {}): Promise<Ticket[]> {
+  async getMerkazTickets(filters: TicketsFilter = {}, user?: User): Promise<Ticket[]> {
     let tickets = Array.from(this.ticketsData.values());
-    
-    if (filters.status) {
+
+    // If user is Kabam, filter by their units
+    if (user && user.permissionGroup === "Kabam") {
+      const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
+      tickets = tickets.filter(ticket => userUnits.includes(ticket.unitRelated));
+    }
+
+    // For Merkaz/System Admin, do NOT filter by unit/kabam unless a filter is set
+    if (filters.status && filters.status !== "all") {
       tickets = tickets.filter(ticket => ticket.status === filters.status);
     }
-    
-    if (filters.kabam) {
+    if (filters.kabam && filters.kabam !== "all") {
       tickets = tickets.filter(ticket => ticket.kabamRelated === filters.kabam);
     }
-    
-    if (filters.rule) {
+    if (filters.rule && filters.rule !== "all") {
       const ruleId = parseInt(filters.rule);
       tickets = tickets.filter(ticket => ticket.relatedRulesList.includes(ruleId));
     }
-    
-    if (filters.severity) {
+    if (filters.severity && filters.severity !== "all") {
       switch(filters.severity) {
         case 'high':
           tickets = tickets.filter(ticket => ticket.severity >= 8);
@@ -648,35 +706,32 @@ export class MemStorage implements IStorage {
           break;
       }
     }
-    
-    // Sort by id descending
+
+    // Sort and paginate as before
     tickets.sort((a, b) => b.id - a.id);
-    
-    // Apply pagination
     if (filters.skip !== undefined && filters.limit !== undefined) {
       tickets = tickets.slice(filters.skip, filters.skip + filters.limit);
     }
-    
     return tickets;
   }
 
   async getMerkazTicketsCount(filters: TicketsFilter = {}): Promise<number> {
     let tickets = Array.from(this.ticketsData.values());
-    
-    if (filters.status) {
+
+    if (filters.status && filters.status !== "all") {
       tickets = tickets.filter(ticket => ticket.status === filters.status);
     }
-    
-    if (filters.kabam) {
+
+    if (filters.kabam && filters.kabam !== "all") {
       tickets = tickets.filter(ticket => ticket.kabamRelated === filters.kabam);
     }
-    
-    if (filters.rule) {
+
+    if (filters.rule && filters.rule !== "all") {
       const ruleId = parseInt(filters.rule);
       tickets = tickets.filter(ticket => ticket.relatedRulesList.includes(ruleId));
     }
-    
-    if (filters.severity) {
+
+    if (filters.severity && filters.severity !== "all") {
       switch(filters.severity) {
         case 'high':
           tickets = tickets.filter(ticket => ticket.severity >= 8);
@@ -689,7 +744,7 @@ export class MemStorage implements IStorage {
           break;
       }
     }
-    
+
     return tickets.length;
   }
 

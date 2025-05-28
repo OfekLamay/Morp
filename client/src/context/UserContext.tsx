@@ -4,11 +4,12 @@ export interface User {
   id: string;
   username: string;
   fullName: string;
-  permissionGroup: string;
+  permissionGroup: string; // "Kabam", "Merkaz", "System Administrator"
+  isManager?: boolean;
   kabam?: string;
   unit?: string;
+  unitsUnder?: string; // comma-separated or array
   parentUnit?: string;
-  // add more fields as needed
   token: string;
 }
 
