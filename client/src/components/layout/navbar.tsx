@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // or Dialog/Dropdown if you prefer
+import { useUser } from "@/context/UserContext";
 
 const navItems = [
   { path: "/", label: "Merkaz Dashboard" },
@@ -15,11 +17,20 @@ const navItems = [
 export default function Navbar() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout } = useUser();
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const userInitials = user
+    ? user.fullName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "??";
 
   return (
     <nav className="bg-card border-b border-border fixed w-full z-10">
@@ -54,20 +65,42 @@ export default function Navbar() {
           {/* User Menu */}
           <div className="flex items-center">
             <div className="ml-3 relative">
-              <div>
-                <button
-                  type="button"
-                  className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  id="user-menu-button"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                >
-                  <span className="sr-only">Open user menu</span>
-                  <div className="profile-image">
-                    AS
-                  </div>
-                </button>
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    id="user-menu-button"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                  >
+                    <span className="sr-only">Open user menu</span>
+                    <div className="profile-image">
+                      {userInitials}
+                    </div>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64">
+                  {user ? (
+                    <div className="p-2">
+                      <div className="font-bold text-lg mb-1">{user.fullName}</div>
+                      <div className="text-sm text-muted-foreground mb-2">@{user.username}</div>
+                      <div className="mb-1"><b>Permission:</b> {user.permissionGroup}</div>
+                      {user.kabam && <div className="mb-1"><b>Kabam/Unit:</b> {user.kabam}</div>}
+                      {user.unit && <div className="mb-1"><b>Unit:</b> {user.unit}</div>}
+                      {user.parentUnit && <div className="mb-1"><b>Parent Unit:</b> {user.parentUnit}</div>}
+                      <button
+                        className="mt-2 w-full bg-red-500 text-white py-1 rounded"
+                        onClick={logout}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="p-2 text-center text-muted-foreground">Not logged in</div>
+                  )}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 
