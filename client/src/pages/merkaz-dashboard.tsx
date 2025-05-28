@@ -31,6 +31,19 @@ function useAllTickets() {
   });
 }
 
+const BAR_COLORS = [
+  "#2563eb", // blue
+  "#fbbf24", // yellow
+  "#10b981", // green
+  "#f43f5e", // red
+  "#a855f7", // purple
+  "#fb923c", // orange
+  "#38bdf8", // sky blue
+  "#6366f1", // indigo
+  "#22d3ee", // cyan
+  "#84cc16", // lime
+];
+
 export default function MerkazDashboard() {
   const [timePeriod, setTimePeriod] = useState("7"); // days
   
@@ -249,9 +262,9 @@ export default function MerkazDashboard() {
                   itemStyle={{ color: "#000" }}
                 />
                 <Bar dataKey="count">
-                  <Cell fill="#3b82f6" />
-                  <Cell fill="#fbbf24" />
-                  <Cell fill="#ef4444" />
+                  {ruleData.map((entry, idx) => (
+                    <Cell key={`cell-rule-${idx}`} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
