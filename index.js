@@ -71,7 +71,7 @@ var MemStorage = class {
         enforcement: "ACTIVE",
         userCreated: "jsmith",
         managerApproved: "sjohnson",
-        importance: 8,
+        severity: 8,
         usersRelatedTo: ["dlee", "sjohnson"],
         enabled: true
       },
@@ -79,10 +79,10 @@ var MemStorage = class {
         creationDate: new Date(Date.now() - 35 * 24 * 60 * 60 * 1e3),
         itemsList: ["phone", "laptop", "wifi"],
         description: "Monitor high-risk communications",
-        enforcement: "ACTIVE",
+        enforcement: "SILENT",
         userCreated: "sjohnson",
         managerApproved: "jsmith",
-        importance: 9,
+        severity: 9,
         usersRelatedTo: ["dlee"],
         enabled: true
       },
@@ -93,42 +93,67 @@ var MemStorage = class {
         enforcement: "SILENT",
         userCreated: "dlee",
         managerApproved: "",
-        importance: 5,
+        severity: 5,
         usersRelatedTo: [],
         enabled: true
       }
     ];
     sampleRules.forEach((rule) => this.createRule(rule));
-    const sampleTickets = [
+    const demoTickets = [
       {
-        expirationDate: new Date(Date.now() + 8 * 60 * 60 * 1e3),
         userGatheredFrom: "user123",
+        userManaging: "admin1",
+        creationDate: /* @__PURE__ */ new Date(),
+        expirationDate: new Date(Date.now() + 4 * 60 * 60 * 1e3),
         relatedRulesList: [1],
-        importance: 8,
-        status: "in progress",
-        kabamRelated: "Kabam A",
-        unitRelated: "Unit 1"
-      },
-      {
-        expirationDate: new Date(Date.now() + 6 * 60 * 60 * 1e3),
-        userGatheredFrom: "user456",
-        relatedRulesList: [2],
-        importance: 6,
+        severity: 9,
         status: "done",
-        kabamRelated: "Kabam B",
-        unitRelated: "Unit 3"
+        isTruePositive: true,
+        kabamRelated: "Kabam A",
+        unitRelated: "Unit 81",
+        imageUrl: "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68"
       },
       {
-        expirationDate: new Date(Date.now() - 4 * 60 * 60 * 1e3),
+        userGatheredFrom: "user456",
+        userManaging: "admin2",
+        creationDate: /* @__PURE__ */ new Date("2025-05-19T15:42:19"),
+        expirationDate: new Date((/* @__PURE__ */ new Date("2025-05-19T15:42:19")).getTime() + 10 * 60 * 60 * 1e3),
+        relatedRulesList: [2],
+        severity: 6,
+        status: "in progress",
+        isTruePositive: false,
+        kabamRelated: "Kabam B",
+        unitRelated: "Unit 8200",
+        imageUrl: "https://fastly.picsum.photos/id/16/2500/1667.jpg?hmac=uAkZwYc5phCRNFTrV_prJ_0rP0EdwJaZ4ctje2bY7aE"
+      },
+      {
+        userGatheredFrom: "user623",
+        userManaging: "admin7",
+        creationDate: new Date(Date.now() - 3 * 60 * 60 * 1e3),
+        expirationDate: new Date(Date.now() + 4 * 60 * 60 * 1e3),
+        relatedRulesList: [2],
+        severity: 9,
+        status: "in progress",
+        isTruePositive: false,
+        kabamRelated: "Kabam 162",
+        unitRelated: "Unit 3412",
+        imageUrl: "https://fastly.picsum.photos/id/29/4000/2670.jpg?hmac=rCbRAl24FzrSzwlR5tL-Aqzyu5tX_PA95VJtnUXegGU"
+      },
+      {
         userGatheredFrom: "user789",
-        relatedRulesList: [1],
-        importance: 3,
+        userManaging: "admin3",
+        creationDate: /* @__PURE__ */ new Date(),
+        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1e3),
+        relatedRulesList: [3],
+        severity: 3,
         status: "false positive",
+        isTruePositive: false,
         kabamRelated: "Kabam C",
-        unitRelated: "Unit 2"
+        unitRelated: "Unit 504",
+        imageUrl: "/media/extractedimages/17-2500x1667.jpg"
       }
     ];
-    sampleTickets.forEach((ticket) => this.createTicket(ticket));
+    demoTickets.forEach((ticket) => this.createTicket(ticket));
   }
   // User methods
   async getUser(id) {
@@ -223,13 +248,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          rules3 = rules3.filter((rule) => rule.importance >= 8);
+          rules3 = rules3.filter((rule) => rule.severity >= 8);
           break;
         case "medium":
-          rules3 = rules3.filter((rule) => rule.importance >= 5 && rule.importance <= 7);
+          rules3 = rules3.filter((rule) => rule.severity >= 5 && rule.severity <= 7);
           break;
         case "low":
-          rules3 = rules3.filter((rule) => rule.importance <= 4);
+          rules3 = rules3.filter((rule) => rule.severity <= 4);
           break;
       }
     }
@@ -266,13 +291,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          rules3 = rules3.filter((rule) => rule.importance >= 8);
+          rules3 = rules3.filter((rule) => rule.severity >= 8);
           break;
         case "medium":
-          rules3 = rules3.filter((rule) => rule.importance >= 5 && rule.importance <= 7);
+          rules3 = rules3.filter((rule) => rule.severity >= 5 && rule.severity <= 7);
           break;
         case "low":
-          rules3 = rules3.filter((rule) => rule.importance <= 4);
+          rules3 = rules3.filter((rule) => rule.severity <= 4);
           break;
       }
     }
@@ -285,6 +310,17 @@ var MemStorage = class {
     }
     return rules3.length;
   }
+  /*
+  creationDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        itemsList: ["shoes", "jeans", "t-shirt"],
+        description: "Detect suspicious location patterns",
+        enforcement: "ACTIVE",
+        userCreated: "jsmith",
+        managerApproved: "sjohnson",
+        severity: 8,
+        usersRelatedTo: ["dlee", "sjohnson"],
+        enabled: true,
+   */
   async createRule(insertRule) {
     const id = this.ruleCurrentId++;
     const rule = {
@@ -400,13 +436,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 8);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 8);
           break;
         case "medium":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case "low":
-          tickets3 = tickets3.filter((ticket) => ticket.importance <= 4);
+          tickets3 = tickets3.filter((ticket) => ticket.severity <= 4);
           break;
       }
     }
@@ -431,13 +467,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 8);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 8);
           break;
         case "medium":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case "low":
-          tickets3 = tickets3.filter((ticket) => ticket.importance <= 4);
+          tickets3 = tickets3.filter((ticket) => ticket.severity <= 4);
           break;
       }
     }
@@ -458,13 +494,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 8);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 8);
           break;
         case "medium":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case "low":
-          tickets3 = tickets3.filter((ticket) => ticket.importance <= 4);
+          tickets3 = tickets3.filter((ticket) => ticket.severity <= 4);
           break;
       }
     }
@@ -489,13 +525,13 @@ var MemStorage = class {
     if (filters.severity) {
       switch (filters.severity) {
         case "high":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 8);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 8);
           break;
         case "medium":
-          tickets3 = tickets3.filter((ticket) => ticket.importance >= 5 && ticket.importance <= 7);
+          tickets3 = tickets3.filter((ticket) => ticket.severity >= 5 && ticket.severity <= 7);
           break;
         case "low":
-          tickets3 = tickets3.filter((ticket) => ticket.importance <= 4);
+          tickets3 = tickets3.filter((ticket) => ticket.severity <= 4);
           break;
       }
     }
@@ -504,13 +540,23 @@ var MemStorage = class {
   async createTicket(insertTicket) {
     const id = this.ticketCurrentId++;
     const now = /* @__PURE__ */ new Date();
+    const severity = insertTicket.severity ?? 1;
+    let expirationOffsetMs = 24 * 60 * 60 * 1e3;
+    if (severity >= 6 && severity <= 8) {
+      expirationOffsetMs = 10 * 60 * 60 * 1e3;
+    } else if (severity >= 9 && severity <= 10) {
+      expirationOffsetMs = 4 * 60 * 60 * 1e3;
+    }
+    const creationDate = insertTicket.creationDate ? new Date(insertTicket.creationDate) : now;
+    const expirationDate = insertTicket.expirationDate ? new Date(insertTicket.expirationDate) : new Date(creationDate.getTime() + expirationOffsetMs);
     const ticket = {
       ...insertTicket,
       id,
-      creationDate: now,
+      creationDate,
+      expirationDate,
       status: insertTicket.status || "waiting for identification",
-      isTruePositive: insertTicket.isTruePositive || false,
-      userManaging: insertTicket.userManaging || "",
+      isTruePositive: insertTicket.isTruePositive || true,
+      userManaging: insertTicket.userManaging || "need to be related",
       usersRelatedTo: insertTicket.usersRelatedTo || [],
       kabamRelated: insertTicket.kabamRelated || "need to be related",
       unitRelated: insertTicket.unitRelated || "need to be related"
@@ -531,7 +577,7 @@ var MemStorage = class {
   async getMerkazTicketsStats() {
     const tickets3 = Array.from(this.ticketsData.values());
     const totalCount = tickets3.length;
-    const highSeverityCount = tickets3.filter((ticket) => ticket.importance >= 6).length;
+    const highSeverityCount = tickets3.filter((ticket) => ticket.severity >= 6).length;
     const inProgressCount = tickets3.filter((ticket) => ticket.status === "in progress").length;
     const kabamSet = /* @__PURE__ */ new Set();
     tickets3.forEach((ticket) => {
@@ -555,7 +601,7 @@ var MemStorage = class {
   async getKabamTicketsStats() {
     const tickets3 = Array.from(this.ticketsData.values());
     const totalCount = tickets3.length;
-    const highSeverityCount = tickets3.filter((ticket) => ticket.importance >= 6).length;
+    const highSeverityCount = tickets3.filter((ticket) => ticket.severity >= 6).length;
     const inProgressCount = tickets3.filter((ticket) => ticket.status === "in progress").length;
     const unitSet = /* @__PURE__ */ new Set();
     tickets3.forEach((ticket) => {
@@ -643,7 +689,7 @@ var rules = pgTable("rules", {
   // "ACTIVE", "SILENT"
   userCreated: text("user_created").notNull(),
   managerApproved: text("manager_approved").default(""),
-  importance: integer("importance").notNull(),
+  severity: integer("severity").notNull(),
   // 1-10
   usersRelatedTo: json("users_related_to").$type().default([]),
   enabled: boolean("enabled").default(true)
@@ -658,16 +704,18 @@ var tickets = pgTable("tickets", {
   creationDate: timestamp("creation_date").defaultNow(),
   expirationDate: timestamp("expiration_date").notNull(),
   userGatheredFrom: text("user_gathered_from").notNull(),
-  userManaging: text("user_managing").default(""),
+  userManaging: text("user_managing").default("not related yet"),
   relatedRulesList: json("related_rules_list").$type().notNull(),
-  importance: integer("importance").notNull(),
+  severity: integer("severity").notNull(),
   usersRelatedTo: json("users_related_to").$type().default([]),
-  status: text("status").notNull().default("waiting for identification"),
+  status: text("status").notNull().default("not related yet"),
   // done, in progress, FP, waiting for identification, not related yet, reopened
   isTruePositive: boolean("is_true_positive").default(false),
   // FP/TP
   kabamRelated: text("kabam_related").default("need to be related"),
-  unitRelated: text("unit_related").default("need to be related")
+  unitRelated: text("unit_related").default("need to be related"),
+  imageUrl: text("image_url").default("")
+  // Path or URL to the image
 });
 var insertTicketSchema = createInsertSchema(tickets).omit({
   id: true,
@@ -757,6 +805,7 @@ async function registerRoutes(app2) {
     }
   });
   app2.post("/api/rules", async (req, res) => {
+    console.log("Received POST /api/rules with body:", req.body);
     try {
       const ruleData = insertRuleSchema.parse(req.body);
       const newRule = await storage.createRule(ruleData);
@@ -819,7 +868,12 @@ async function registerRoutes(app2) {
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const ticketsList = await storage.getMerkazTickets({ status, kabam, rule, severity, skip, limit: parseInt(limit) });
       const totalCount = await storage.getMerkazTicketsCount({ status, kabam, rule, severity });
-      res.json({ tickets: ticketsList, totalCount });
+      const ticketsWithImage = ticketsList.map((ticket) => ({
+        ...ticket,
+        imageUrl: ticket.imageUrl || null
+        // or whatever your field is called
+      }));
+      res.json({ tickets: ticketsWithImage, totalCount });
     } catch (error) {
       console.error("Error fetching merkaz tickets:", error);
       res.status(500).json({ message: "Failed to fetch tickets" });
@@ -886,7 +940,11 @@ async function registerRoutes(app2) {
       const skip = (parseInt(page) - 1) * parseInt(limit);
       const ticketsList = await storage.getKabamTickets({ status, unit, rule, severity, skip, limit: parseInt(limit) });
       const totalCount = await storage.getKabamTicketsCount({ status, unit, rule, severity });
-      res.json({ tickets: ticketsList, totalCount });
+      const ticketsWithImage = ticketsList.map((ticket) => ({
+        ...ticket,
+        imageUrl: ticket.imageUrl || null
+      }));
+      res.json({ tickets: ticketsWithImage, totalCount });
     } catch (error) {
       console.error("Error fetching kabam tickets:", error);
       res.status(500).json({ message: "Failed to fetch tickets" });
@@ -899,6 +957,35 @@ async function registerRoutes(app2) {
     } catch (error) {
       console.error("Error fetching kabam ticket stats:", error);
       res.status(500).json({ message: "Failed to fetch ticket stats" });
+    }
+  });
+  app2.patch("/api/kabam-tickets/:id", async (req, res) => {
+    try {
+      const ticketId = parseInt(req.params.id);
+      const allowedFields = [
+        "usersRelatedTo",
+        "status",
+        "isTruePositive",
+        "unitRelated",
+        "severity",
+        "expirationDate",
+        "imageUrl"
+        // add more fields as needed
+      ];
+      const updateData = {};
+      for (const key of allowedFields) {
+        if (req.body[key] !== void 0) {
+          updateData[key] = req.body[key];
+        }
+      }
+      const updatedTicket = await storage.updateTicket(ticketId, updateData);
+      if (!updatedTicket) {
+        return res.status(404).json({ message: "Ticket not found" });
+      }
+      res.json(updatedTicket);
+    } catch (error) {
+      console.error("Error updating kabam ticket:", error);
+      res.status(400).json({ message: "Invalid ticket data" });
     }
   });
   app2.post("/api/media", async (req, res) => {
@@ -947,17 +1034,11 @@ import { createServer as createViteServer, createLogger } from "vite";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 var vite_config_default = defineConfig({
   base: "/Morp/",
+  // for GitHub Pages, but not for local dev
   plugins: [
-    react(),
-    runtimeErrorOverlay(),
-    ...process.env.NODE_ENV !== "production" && process.env.REPL_ID !== void 0 ? [
-      await import("@replit/vite-plugin-cartographer").then(
-        (m) => m.cartographer()
-      )
-    ] : []
+    react()
   ],
   resolve: {
     alias: {
