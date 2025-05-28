@@ -3,9 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
 import { useTickets } from "@/hooks/use-tickets";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "@/components/ui/dropdown-menu";
+
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
 
 const emptyImg = "/media/wow-such-empty.jpg";
@@ -28,6 +27,17 @@ const TICKET_STATUSES = [
   "not related yet",
   "reopened"
 ];
+
+const STATUS_COLORS: Record<string, string> = {
+  "done": "#38BDF8", // blue
+  "in progress": "#10B981", // green
+  "fp": "#A855F7", // purple
+  "false positive": "#A855F7", // purple (alias)
+  "waiting for identification": "#FB923C", // orange
+  "not related yet": "#F43F5E", // red
+  "not yet": "#F43F5E", // red (alias)
+  "reopened": "#f59e42", // orange-ish
+};
 
 // If ticket.imageUrl is a full URL, use as is.
 // If it's a local filename, prepend the public path.
@@ -58,6 +68,9 @@ export default function MerkazTickets() {
   const [assignTicket, setAssignTicket] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const allUsers = useAllUsers();
+
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [statusTicket, setStatusTicket] = useState(null);
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -183,70 +196,19 @@ export default function MerkazTickets() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tickets.map(ticket => (
             <div key={ticket.id} className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                {/* Left: Status above Severity */}
-                <div className="flex flex-col gap-1">
-                  <StatusBadge status={ticket.status} />
-                  <SeverityIndicator severity={ticket.severity} />
-                </div>
-                {/* Right: Actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-5 w-5" />
-                      <span className="sr-only">Actions</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleViewDetails(ticket)}>
-                      View Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setAssignTicket(ticket);
-                        setAssignModalOpen(true);
-                        setSelectedUsers(ticket.usersRelatedTo || []);
-                      }}
-                    >
-                      Assign User
-                    </DropdownMenuItem>
-                    <DropdownMenuSub>
-                      <DropdownMenuSubTrigger>
-                        Update Status
-                      </DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent>
-                        {TICKET_STATUSES.map(status => (
-                          <DropdownMenuItem
-                            key={status}
-                            onClick={() => handleUpdateStatus(ticket.id, status)}
-                          >
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateTicket.mutate(
-                          { id: ticket.id, isTruePositive: true, status: "not related yet" },
-                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
-                        )
-                      }
-                    >
-                      Mark as True Positive
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateTicket.mutate(
-                          { id: ticket.id, isTruePositive: false, status: "false positive" },
-                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
-                        )
-                      }
-                    >
-                      Mark as False Positive
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <div className="flex items-center justify-between mb-2 w-full">
+                {/* Status at top left */}
+                <span
+                  className="px-2 py-1 rounded text-xs font-semibold"
+                  style={{
+                    background: STATUS_COLORS[ticket.status?.toLowerCase()] || "#e5e7eb",
+                    color: "#fff"
+                  }}
+                >
+                  {ticket.status?.charAt(0).toUpperCase() + ticket.status?.slice(1)}
+                </span>
+                {/* Severity at top right */}
+                <SeverityIndicator severity={ticket.severity} />
               </div>
               {ticket.imageUrl && (
                 <a
@@ -283,6 +245,73 @@ export default function MerkazTickets() {
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">Date created:</span>
                   <span>{ticket.creationDate ? new Date(ticket.creationDate).toLocaleString() : ""}</span>
+                </div>
+                
+              </div>
+              <div className="flex flex-col gap-2 mt-4 w-full">
+                <div className="flex gap-2 w-full">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() => handleViewDetails(ticket)}
+                  >
+                    View Details
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() => {
+                      setAssignTicket(ticket);
+                      setAssignModalOpen(true);
+                      setSelectedUsers(ticket.usersRelatedTo || []);
+                    }}
+                  >
+                    Assign User
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 min-w-0"
+                    style={{
+                      background: STATUS_COLORS[ticket.status?.toLowerCase()] || "#e5e7eb",
+                      color: "#fff"
+                    }}
+                    onClick={() => {
+                      setStatusTicket(ticket);
+                      setStatusModalOpen(true);
+                    }}
+                  >
+                    Update Status
+                  </Button>
+                </div>
+                <div className="flex gap-2 w-full">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() =>
+                      updateTicket.mutate(
+                        { id: ticket.id, isTruePositive: true, status: "not related yet" },
+                        { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                      )
+                    }
+                  >
+                    Mark as True Positive
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() =>
+                      updateTicket.mutate(
+                        { id: ticket.id, isTruePositive: false, status: "false positive" },
+                        { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                      )
+                    }
+                  >
+                    Mark as False Positive
+                  </Button>
                 </div>
               </div>
             </div>
@@ -371,6 +400,44 @@ export default function MerkazTickets() {
             >
               Assign
             </button>
+          </div>
+        </div>
+      )}
+      {statusModalOpen && statusTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              onClick={() => setStatusModalOpen(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Update Status</h2>
+            <div className="flex flex-col gap-2">
+              {TICKET_STATUSES.map(status => (
+                <button
+                  key={status}
+                  className="w-full py-2 rounded font-semibold"
+                  style={{
+                    background: STATUS_COLORS[status.toLowerCase()] || "#e5e7eb",
+                    color: "#fff"
+                  }}
+                  onClick={() => {
+                    updateTicket.mutate(
+                      { id: statusTicket.id, status },
+                      {
+                        onSuccess: () => {
+                          setStatusModalOpen(false);
+                          if (typeof refetch === "function") refetch();
+                        }
+                      }
+                    );
+                  }}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}

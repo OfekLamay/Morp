@@ -44,6 +44,17 @@ function getImageSrc(imageUrl: string | undefined) {
   return `/media/extractedimages/${cleanName}`;
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  "done": "#38BDF8", // blue
+  "in progress": "#10B981", // green
+  "fp": "#A855F7", // purple
+  "false positive": "#A855F7", // purple (alias)
+  "waiting for identification": "#FB923C", // orange
+  "not related yet": "#F43F5E", // red
+  "not yet": "#F43F5E", // red (alias)
+  "reopened": "#f59e42", // orange-ish
+};
+
 export default function KabamTickets() {
   const [filters, setFilters] = useState({
     status: "all",
@@ -187,71 +198,20 @@ export default function KabamTickets() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tickets.map(ticket => (
             <div key={ticket.id} className="bg-white rounded-lg shadow p-4 flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                {/* Left: Status above Severity */}
-                <div className="flex flex-col gap-1">
-                  <StatusBadge status={ticket.status} />
-                  <SeverityIndicator severity={ticket.severity} />
-                </div>
-                {/* Right: Actions */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-5 w-5" />
-                      <span className="sr-only">Actions</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleViewDetails(ticket)}>
-                      View Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setAssignTicket(ticket);
-                        setAssignModalOpen(true);
-                        setSelectedUsers(ticket.usersRelatedTo || []);
-                      }}
-                    >
-                      Assign User
-                    </DropdownMenuItem>
-                    <DropdownMenuSub>
-                      <DropdownMenuSubTrigger>
-                        Update Status
-                      </DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent>
-                        {TICKET_STATUSES.map(status => (
-                          <DropdownMenuItem
-                            key={status}
-                            onClick={() => handleUpdateStatus(ticket.id, status)}
-                          >
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateTicket.mutate(
-                          { id: ticket.id, isTruePositive: true, status: "not related yet" },
-                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
-                        )
-                      }
-                    >
-                      Mark as True Positive
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        updateTicket.mutate(
-                          { id: ticket.id, isTruePositive: false, status: "false positive" },
-                          { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
-                        )
-                      }
-                    >
-                      Mark as False Positive
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              {/* Status and Severity on the same line */}
+              <div className="flex items-center justify-between mb-2 w-full">
+                <span
+                  className="px-2 py-1 rounded text-xs font-semibold"
+                  style={{
+                    background: STATUS_COLORS[ticket.status?.toLowerCase()] || "#e5e7eb",
+                    color: "#fff"
+                  }}
+                >
+                  {ticket.status?.charAt(0).toUpperCase() + ticket.status?.slice(1)}
+                </span>
+                <SeverityIndicator severity={ticket.severity} />
               </div>
+              {/* Clickable image */}
               {ticket.imageUrl && (
                 <a
                   href={getImageSrc(ticket.imageUrl)}
@@ -287,6 +247,73 @@ export default function KabamTickets() {
                 <div className="flex items-center gap-2">
                   <span className="font-semibold">Date created:</span>
                   <span>{ticket.creationDate ? new Date(ticket.creationDate).toLocaleString() : ""}</span>
+                </div>
+              </div>
+              {/* Action buttons: 2 rows, full width */}
+              <div className="flex flex-col gap-2 mt-4 w-full">
+                <div className="flex gap-2 w-full">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() => handleViewDetails(ticket)}
+                  >
+                    View Details
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() => {
+                      setAssignTicket(ticket);
+                      setAssignModalOpen(true);
+                      setSelectedUsers(ticket.usersRelatedTo || []);
+                    }}
+                  >
+                    Assign User
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex-1 min-w-0"
+                    style={{
+                      background: STATUS_COLORS[ticket.status?.toLowerCase()] || "#e5e7eb",
+                      color: "#fff"
+                    }}
+                    onClick={() => {
+                      setStatusTicket(ticket);
+                      setStatusModalOpen(true);
+                    }}
+                  >
+                    Update Status
+                  </Button>
+                </div>
+                <div className="flex gap-2 w-full">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() =>
+                      updateTicket.mutate(
+                        { id: ticket.id, isTruePositive: true, status: "not related yet" },
+                        { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                      )
+                    }
+                  >
+                    Mark as True Positive
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-w-0"
+                    onClick={() =>
+                      updateTicket.mutate(
+                        { id: ticket.id, isTruePositive: false, status: "false positive" },
+                        { onSuccess: () => { if (typeof refetch === "function") refetch(); } }
+                      )
+                    }
+                  >
+                    Mark as False Positive
+                  </Button>
                 </div>
               </div>
             </div>
