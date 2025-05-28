@@ -87,7 +87,7 @@ export default function UserManagement() {
           totalCount={totalCount}
           page={page}
           onPageChange={setPage}
-          pageSize={20}
+          pageSize={21}
         />
       )}
     </div>

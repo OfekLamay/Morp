@@ -31,7 +31,7 @@ export default function RulesTable({
   totalCount,
   page,
   onPageChange,
-  pageSize = 10,
+  pageSize = 21,
   onViewDetails,
   onEditRule,
   onDeleteRule

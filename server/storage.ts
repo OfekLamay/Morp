@@ -325,6 +325,38 @@ export class MemStorage implements IStorage {
     ];
 
     kabam98Tickets.forEach(ticket => this.createTicket(ticket));
+
+    // Add 10 tickets for Kabam 36 (Unit 36 and Unit 3600)
+    const kabam36Tickets = [
+      ...Array.from({ length: 5 }).map((_, i) => ({
+        userGatheredFrom: `kabam36_user${i + 1}`,
+        userManaging: "kabam36_manager",
+        creationDate: new Date(Date.now() - i * 90 * 60 * 1000),
+        expirationDate: new Date(Date.now() + (i + 1) * 3 * 60 * 60 * 1000),
+        relatedRulesList: [2],
+        severity: 6 + (i % 5), // 6,7,8,9,10
+        status: ["done", "in progress", "waiting for identification", "fp", "not related yet"][i % 5],
+        isTruePositive: i % 2 === 0,
+        kabamRelated: "Kabam 36",
+        unitRelated: "Unit 36",
+        imageUrl: `https://picsum.photos/seed/kabam36_${i}/400/300`
+      })),
+      ...Array.from({ length: 5 }).map((_, i) => ({
+        userGatheredFrom: `kabam3600_user${i + 1}`,
+        userManaging: "kabam36_manager",
+        creationDate: new Date(Date.now() - (i + 5) * 90 * 60 * 1000),
+        expirationDate: new Date(Date.now() + (i + 6) * 3 * 60 * 60 * 1000),
+        relatedRulesList: [3],
+        severity: 5 + (i % 6), // 5,6,7,8,9,10
+        status: ["in progress", "done", "waiting for identification", "fp", "not related yet"][i % 5],
+        isTruePositive: i % 2 !== 0,
+        kabamRelated: "Kabam 36",
+        unitRelated: "Unit 3600",
+        imageUrl: `https://picsum.photos/seed/kabam3600_${i}/400/300`
+      })),
+    ];
+
+    kabam36Tickets.forEach(ticket => this.createTicket(ticket));
   }
 
   // User methods

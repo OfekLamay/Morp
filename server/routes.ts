@@ -183,7 +183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Ticket routes - Merkaz
   app.get("/api/merkaz-tickets", async (req, res) => {
     try {
-      const { status, kabam, rule, severity, page = "1", limit = "20" } = req.query as Record<string, string>;
+      const { status, kabam, rule, severity, page = "1", limit = "21" } = req.query as Record<string, string>;
       const skip = (parseInt(page) - 1) * parseInt(limit);
       
       const user = req.user; // however you get the logged-in user

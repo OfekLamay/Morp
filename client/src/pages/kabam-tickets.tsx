@@ -151,6 +151,15 @@ export default function KabamTickets() {
     // Optionally, add dependencies if you want to refetch on filter change, etc.
   }, []); // Empty array = only on mount
 
+  const totalPages = Math.max(1, Math.ceil(totalCount / 20)); // 20 is your page size
+  const pageNumbers = [];
+  const startPage = Math.max(1, page - 3);
+  const endPage = Math.min(totalPages, page + 3);
+
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -444,6 +453,65 @@ export default function KabamTickets() {
           </div>
         </div>
       )}
+
+      <div className="flex flex-col items-center mt-8 gap-2">
+        <div className="flex items-center gap-1">
+          <button
+            className="px-2 py-1 rounded border"
+            disabled={page === 1}
+            onClick={() => setPage(1)}
+          >
+            {"<<"}
+          </button>
+          <button
+            className="px-2 py-1 rounded border"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            {"<"}
+          </button>
+          {pageNumbers.map(p => (
+            <button
+              key={p}
+              className={`px-3 py-1 rounded border ${p === page ? "bg-blue-500 text-white" : "bg-white"}`}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </button>
+          ))}
+          <button
+            className="px-2 py-1 rounded border"
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            {">"}
+          </button>
+          <button
+            className="px-2 py-1 rounded border"
+            disabled={page === totalPages}
+            onClick={() => setPage(totalPages)}
+          >
+            {">>"}
+          </button>
+          <span className="ml-4 text-sm text-gray-600">
+            Page {page} of {totalPages}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 mt-1">
+          <span>Go to page:</span>
+          <input
+            type="number"
+            min={1}
+            max={totalPages}
+            value={page}
+            onChange={e => {
+              const val = Number(e.target.value);
+              if (val >= 1 && val <= totalPages) setPage(val);
+            }}
+            className="w-16 px-2 py-1 border rounded"
+          />
+        </div>
+      </div>
     </div>
   );
 }

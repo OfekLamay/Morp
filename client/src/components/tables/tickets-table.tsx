@@ -30,7 +30,7 @@ export default function TicketsTable({
   totalCount,
   page,
   onPageChange,
-  pageSize = 20,
+  pageSize = 21,
   isMerkaz = true
 }: TicketsTableProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -127,78 +127,22 @@ export default function TicketsTable({
         </div>
         <Pagination>
           <PaginationContent>
-            {page > 1 && (
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => onPageChange(page - 1)}
-                  className="cursor-pointer"
-                />
+            <PaginationItem>
+              <PaginationPrevious onClick={() => onPageChange(Math.max(1, page - 1))} />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, idx) => (
+              <PaginationItem key={idx}>
+                <PaginationLink
+                  isActive={page === idx + 1}
+                  onClick={() => onPageChange(idx + 1)}
+                >
+                  {idx + 1}
+                </PaginationLink>
               </PaginationItem>
-            )}
-            
-            {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
-              let pageNum: number;
-              
-              // Calculate which page numbers to show (always show 5 or fewer)
-              if (totalPages <= 5) {
-                pageNum = idx + 1;
-              } else if (page <= 3) {
-                pageNum = idx + 1;
-              } else if (page >= totalPages - 2) {
-                pageNum = totalPages - 4 + idx;
-              } else {
-                pageNum = page - 2 + idx;
-              }
-              
-              // Show ellipsis for first page
-              if (idx === 0 && pageNum > 1) {
-                return (
-                  <PaginationItem key="start-ellipsis">
-                    <PaginationLink 
-                      onClick={() => onPageChange(1)}
-                      className="cursor-pointer"
-                    >
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-              
-              // Show ellipsis for last page
-              if (idx === 4 && pageNum < totalPages) {
-                return (
-                  <PaginationItem key="end-ellipsis">
-                    <PaginationLink 
-                      onClick={() => onPageChange(totalPages)}
-                      className="cursor-pointer"
-                    >
-                      {totalPages}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-              
-              return (
-                <PaginationItem key={pageNum}>
-                  <PaginationLink
-                    isActive={pageNum === page}
-                    onClick={() => onPageChange(pageNum)}
-                    className="cursor-pointer"
-                  >
-                    {pageNum}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            })}
-            
-            {page < totalPages && (
-              <PaginationItem>
-                <PaginationNext 
-                  onClick={() => onPageChange(page + 1)}
-                  className="cursor-pointer"
-                />
-              </PaginationItem>
-            )}
+            ))}
+            <PaginationItem>
+              <PaginationNext onClick={() => onPageChange(Math.min(totalPages, page + 1))} />
+            </PaginationItem>
           </PaginationContent>
         </Pagination>
       </div>
