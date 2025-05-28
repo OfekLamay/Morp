@@ -51,7 +51,7 @@ function getImageSrc(imageUrl: string | undefined) {
   return `/media/extractedimages/${cleanName}`;
 }
 
-const pageSize = 20; // or any number you want
+const pageSize = 21; // or any number you want
 
 export default function MerkazTickets() {
   const { user } = useUser();
