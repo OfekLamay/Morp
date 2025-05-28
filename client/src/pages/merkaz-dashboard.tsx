@@ -189,96 +189,58 @@ export default function MerkazDashboard() {
             />
           </div>
         </div>
-
-        {/* Detection Trends */}
+        
+        {/* Tickets by Rule (Vertical Bar Chart) */}
         <div className="grid-card overflow-hidden">
           <div className="p-4 border-b border-border flex justify-between items-center">
-            <h3 className="text-lg font-medium ">Detection Trends</h3>
+            <h3 className="text-lg font-medium">Tickets by Rule</h3>
             <ExportButton
-              title="Detection Trends"
-              headers={["Date", "R001 (TP)", "R001 (FP)", "R002 (TP)", "R002 (FP)"]}
-              data={trendData.map(point => ({
-                "Date": point.name,
-                "R001 (TP)": point["R001-TP"],
-                "R001 (FP)": point["R001-FP"],
-                "R002 (TP)": point["R002-TP"],
-                "R002 (FP)": point["R002-FP"],
+              title="Tickets by Rule"
+              headers={["Rule", "Count"]}
+              data={ruleData.map(item => ({
+                "Rule": item.rule,
+                "Count": item.count
               }))}
-              filename="detection_trends_data"
+              filename="tickets_by_rule"
             />
           </div>
           <div className="p-4">
-            <CustomLineChart
-              data={trendData}
-              title=""
-              lines={trendLines}
-              height={280}
-              yAxisLabel="Detections"
-              xAxisLabel="Date"
-            />
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={ruleData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="rule"
+                  angle={-45}
+                  textAnchor="end"
+                  interval={0}
+                  height={60}
+                  stroke="#000"
+                  tick={{ fill: "#000" }}
+                  label={{ value: "Rule", fill: "#000" }}
+                />
+                <YAxis
+                  stroke="#000"
+                  tick={{ fill: "#000" }}
+                  label={{ value: "Count", angle: -90, position: "insideLeft", fill: "#000" }}
+                />
+                <Tooltip
+                  contentStyle={{ color: "#000" }}
+                  labelStyle={{ color: "#000" }}
+                  itemStyle={{ color: "#000" }}
+                />
+                <Bar dataKey="count">
+                  <Cell fill="#3b82f6" />
+                  <Cell fill="#fbbf24" />
+                  <Cell fill="#ef4444" />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
+        
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        {/* Tickets by Status (Pie Chart) */}
-        <div className="bg-white rounded shadow p-4">
-          <h3 className="font-semibold mb-2">Tickets by Status</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={statusData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={60}
-                label
-              >
-                {statusData.map((entry, idx) => (
-                  <Cell key={`cell-${idx}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Tickets by Rule (Vertical Bar Chart) */}
-        <div className="bg-white rounded shadow p-4">
-          <h3 className="font-semibold mb-2">Tickets by Rule</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={ruleData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="rule"
-                angle={-45}
-                textAnchor="end"
-                interval={0}
-                height={60}
-                stroke="#000" // <-- Make X axis labels black
-                tick={{ fill: "#000" }} // <-- Make X axis tick labels black
-                label={{ value: "Rule", fill: "#000" }} // <-- X axis label black
-              />
-              <YAxis
-                stroke="#000" // <-- Make Y axis labels black
-                tick={{ fill: "#000" }} // <-- Make Y axis tick labels black
-                label={{ value: "Count", angle: -90, position: "insideLeft", fill: "#000" }} // <-- Y axis label black
-              />
-              <Tooltip
-                contentStyle={{ color: "#000" }} // Tooltip text black
-                labelStyle={{ color: "#000" }}
-                itemStyle={{ color: "#000" }}
-              />
-              <Bar dataKey="count">
-                <Cell fill="#3b82f6" />
-                <Cell fill="#fbbf24" />
-                <Cell fill="#ef4444" />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* Tickets by Kabam (Horizontal Bar Chart) */}
         <div className="bg-white rounded shadow p-4">
           <h3 className="font-semibold mb-2">Tickets by Kabam</h3>
