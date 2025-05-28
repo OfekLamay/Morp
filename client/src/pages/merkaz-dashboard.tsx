@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { FileText, AlertTriangle, ZapIcon, Users, LineChart, MoreHorizontal } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Ticket } from "@shared/schema";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -23,38 +25,57 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
+function useAllTickets() {
+  return useQuery<{ tickets: Ticket[] }>({
+    queryKey: ["/api/merkaz-tickets?limit=1000"],
+  });
+}
+
 export default function MerkazDashboard() {
   const [timePeriod, setTimePeriod] = useState("7"); // days
   
   const { stats, isLoading: isStatsLoading } = useTicketStats(true);
   const { performance, isLoading: isPerfLoading } = useRulesPerformance(undefined, timePeriod);
-  
-  // Demo data for pie chart with more distinct colors
+  const { data: ticketsData, isLoading: isTicketsLoading } = useAllTickets();
+  const tickets = ticketsData?.tickets || [];
+
+  // Status Distribution
   const statusData = [
-    { name: 'Done', value: 10, color: '#38BDF8' },
-    { name: 'In Progress', value: 8, color: '#10B981' },
-    { name: 'FP', value: 6, color: '#A855F7' },
-    { name: 'Waiting For Identification', value: 7, color: '#FB923C' },
-    { name: 'Not Yet', value: 5, color: '#F43F5E' },
+    { name: 'Done', value: tickets.filter(t => t.status?.toLowerCase() === 'done').length, color: '#38BDF8' },
+    { name: 'In Progress', value: tickets.filter(t => t.status?.toLowerCase() === 'in progress').length, color: '#10B981' },
+    { name: 'FP', value: tickets.filter(t => ['fp', 'false positive'].includes(t.status?.toLowerCase())).length, color: '#A855F7' },
+    { name: 'Waiting For Identification', value: tickets.filter(t => t.status?.toLowerCase() === 'waiting for identification').length, color: '#FB923C' },
+    { name: 'Not Yet', value: tickets.filter(t => ['not related yet', 'not yet'].includes(t.status?.toLowerCase())).length, color: '#F43F5E' },
   ];
 
-  const ruleData = [
-    { rule: 'Location,Gaza,A', count: 2 },
-    { rule: 'Uniform,Soldier,B', count: 2 },
-    // ...more rules
-  ];
+  // Tickets by Rule
+  const ruleCounts: Record<string, number> = {};
+  tickets.forEach(t => {
+    (t.relatedRulesList || []).forEach(ruleId => {
+      ruleCounts[ruleId] = (ruleCounts[ruleId] || 0) + 1;
+    });
+  });
+  const ruleData = Object.entries(ruleCounts).map(([rule, count]) => ({
+    rule: `R${String(rule).padStart(3, "0")}`,
+    count,
+  }));
 
-  const kabamData = [
-    { kabam: 'Kabam 98', count: 9 },
-    { kabam: 'Kabam 162', count: 9 },
-    { kabam: 'Kabam 122', count: 9 },
-    { kabam: 'Kabam 144', count: 9 },
-  ];
+  // Tickets by Kabam
+  const kabamCounts: Record<string, number> = {};
+  tickets.forEach(t => {
+    const kabam = t.kabamRelated || "Unknown";
+    kabamCounts[kabam] = (kabamCounts[kabam] || 0) + 1;
+  });
+  const kabamData = Object.entries(kabamCounts).map(([kabam, count]) => ({
+    kabam,
+    count,
+  }));
 
+  // Tickets by Severity
   const severityData = [
-    { severity: 'Low (1-5)', count: 15 },
-    { severity: 'Medium (6-8)', count: 15 },
-    { severity: 'High (9-10)', count: 5 },
+    { severity: 'Low (1-4)', count: tickets.filter(t => t.severity <= 4).length },
+    { severity: 'Medium (5-7)', count: tickets.filter(t => t.severity >= 5 && t.severity <= 7).length },
+    { severity: 'High (8-10)', count: tickets.filter(t => t.severity >= 8).length },
   ];
   
   // Demo data for line chart
@@ -216,7 +237,6 @@ export default function MerkazDashboard() {
                   height={60}
                   stroke="#000"
                   tick={{ fill: "#000" }}
-                  label={{ value: "Rule", fill: "#000" }}
                 />
                 <YAxis
                   stroke="#000"
@@ -242,31 +262,68 @@ export default function MerkazDashboard() {
 
       <div className="grid grid-cols-2 gap-6">
         {/* Tickets by Kabam (Horizontal Bar Chart) */}
-        <div className="bg-white rounded shadow p-4">
-          <h3 className="font-semibold mb-2">Tickets by Kabam</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={kabamData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis dataKey="kabam" type="category" />
-              <Tooltip />
-              <Bar dataKey="count" fill="#2563eb" />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="grid-card overflow-hidden">
+          <div className="p-4 border-b border-border flex justify-between items-center">
+            <h3 className="font-semibold mb-2">Tickets by Kabam</h3>
+            <ExportButton
+              title="Tickets by Kabam"
+              headers={["Kabam", "Count"]}
+              data={kabamData.map(item => ({
+                "Kabam": item.kabam,
+                "Count": item.count
+              }))}
+              filename="tickets_by_kabam"
+            />
+          </div>
+          <div className="p-4">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={kabamData} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis
+                  dataKey="kabam"
+                  type="category"
+                  label={{
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#000",
+                    fontSize: 14,
+                    dy: 60 // adjust as needed
+                  }}
+                  tick={{ fill: "#6b7280", fontSize: 14 }}
+                />
+                <Tooltip />
+                <Bar dataKey="count" fill="#2563eb" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Tickets by Severity (Grouped Bar Chart) */}
-        <div className="bg-white rounded shadow p-4">
-          <h3 className="font-semibold mb-2">Tickets by Severity</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={severityData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="severity" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="count" fill="#2563eb" />
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="grid-card overflow-hidden">
+          <div className="p-4 border-b border-border flex justify-between items-center">
+            <h3 className="font-semibold mb-2">Tickets by Severity</h3>
+            <ExportButton
+              title="Tickets by Severity"
+              headers={["Severity", "Count"]}
+              data={severityData.map(item => ({
+                "Severity": item.severity,
+                "Count": item.count
+              }))}
+              filename="tickets_by_severity"
+            />
+          </div>
+          <div className="p-4">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={severityData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="severity" tick={{ fill: "#6b7280", fontSize: 14 }} />
+                <YAxis tick={{ fill: "#6b7280", fontSize: 14 }} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#2563eb" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
