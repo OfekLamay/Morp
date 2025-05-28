@@ -215,7 +215,7 @@ export default function MerkazTickets() {
                   href={getImageSrc(ticket.imageUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  tabIndex={-1}
+                  tabIndex={-1} // Prevents tab focus on the link if you want only the image focusable
                 >
                   <img
                     src={getImageSrc(ticket.imageUrl)}
