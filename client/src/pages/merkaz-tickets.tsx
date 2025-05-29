@@ -56,7 +56,9 @@ function getImageSrc(imageUrl: string | undefined) {
 
 export default function MerkazTickets() {
   const { user } = useUser();
-  const isMerkaz = user.permissionGroup === "Merkaz" || user.permissionGroup === "System Administrator";
+  const isMerkaz = ["merkaz", "merkaz nitur", "merkaz_manager", "system administrator"].includes(
+    (user.permissionGroup || "").trim().toLowerCase()
+  );
 
   const [filters, setFilters] = useState({
     status: "all",
@@ -485,6 +487,12 @@ export default function MerkazTickets() {
             <div className="mb-2">
               <span className="font-semibold">Fetch URL:</span>
               <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">{fetchUrl}</pre>
+            </div>
+            <div className="mb-2">
+              <span className="font-semibold">Permission Group:</span>
+              <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">
+                {user?.permissionGroup || "Unknown"}
+              </pre>
             </div>
             <div>
               <span className="font-semibold">Filters:</span>
