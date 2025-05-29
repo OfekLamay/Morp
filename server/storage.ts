@@ -708,18 +708,17 @@ export class MemStorage implements IStorage {
   async getMerkazTickets(filters: TicketsFilter = {}, user?: User): Promise<Ticket[]> {
     let tickets = Array.from(this.ticketsData.values());
 
-    // If user is Kabam, filter by their units
-    if (user && user.permissionGroup === "Kabam") {
-      const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
-      tickets = tickets.filter(ticket => userUnits.includes(ticket.unitRelated));
-    }
+    // (Optional) Filter by user permissions...
 
-    // For Merkaz/System Admin, do NOT filter by unit/kabam unless a filter is set
+    // Filtering
     if (filters.status && filters.status !== "all") {
       tickets = tickets.filter(ticket => ticket.status === filters.status);
     }
     if (filters.kabam && filters.kabam !== "all") {
-      tickets = tickets.filter(ticket => ticket.kabamRelated === filters.kabam);
+      const kabamFilter = (filters.kabam ?? "").trim().toLowerCase();
+      tickets = tickets.filter(ticket =>
+        (ticket.kabamRelated ?? "").trim().toLowerCase() === kabamFilter
+      );
     }
     if (filters.rule && filters.rule !== "all") {
       const ruleId = parseInt(filters.rule);
@@ -739,30 +738,29 @@ export class MemStorage implements IStorage {
       }
     }
 
-    // Sort and paginate as before
-    tickets.sort((a, b) => b.id - a.id);
-    if (filters.skip !== undefined && filters.limit !== undefined) {
-      tickets = tickets.slice(filters.skip, filters.skip + filters.limit);
-    }
-    return tickets;
+    // Pagination
+    const skip = parseInt(filters.skip as any) || 0;
+    const limit = parseInt(filters.limit as any) || 20;
+    return tickets.slice(skip, skip + limit);
   }
 
   async getMerkazTicketsCount(filters: TicketsFilter = {}): Promise<number> {
     let tickets = Array.from(this.ticketsData.values());
 
+    // Filtering (same as getMerkazTickets)
     if (filters.status && filters.status !== "all") {
       tickets = tickets.filter(ticket => ticket.status === filters.status);
     }
-
     if (filters.kabam && filters.kabam !== "all") {
-      tickets = tickets.filter(ticket => ticket.kabamRelated === filters.kabam);
+      const kabamFilter = (filters.kabam ?? "").trim().toLowerCase();
+      tickets = tickets.filter(ticket =>
+        (ticket.kabamRelated ?? "").trim().toLowerCase() === kabamFilter
+      );
     }
-
     if (filters.rule && filters.rule !== "all") {
       const ruleId = parseInt(filters.rule);
       tickets = tickets.filter(ticket => ticket.relatedRulesList.includes(ruleId));
     }
-
     if (filters.severity && filters.severity !== "all") {
       switch(filters.severity) {
         case 'high':

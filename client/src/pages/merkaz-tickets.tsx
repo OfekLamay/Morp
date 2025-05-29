@@ -4,6 +4,7 @@ import StatusBadge from "@/components/ui/status-badge";
 import SeverityIndicator from "@/components/ui/severity-indicator";
 import { useUser } from "@/context/UserContext";
 import { useTickets } from "@/hooks/use-tickets";
+import { useQuery } from "react-query";
 
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog"; // Replace with your dialog/modal import if you have one
@@ -40,6 +41,8 @@ const STATUS_COLORS: Record<string, string> = {
   "reopened": "#f59e42", // orange-ish
 };
 
+const pageSize = 21;
+
 // If ticket.imageUrl is a full URL, use as is.
 // If it's a local filename, prepend the public path.
 function getImageSrc(imageUrl: string | undefined) {
@@ -51,8 +54,6 @@ function getImageSrc(imageUrl: string | undefined) {
   return `/media/extractedimages/${cleanName}`;
 }
 
-const pageSize = 21; // or any number you want
-
 export default function MerkazTickets() {
   const { user } = useUser();
   const isMerkaz = user.permissionGroup === "Merkaz Nitur" || user.permissionGroup === "System Administrator";
@@ -63,8 +64,8 @@ export default function MerkazTickets() {
     rule: "all",
     severity: "all",
   });
-
   const [page, setPage] = useState(1);
+
   const { tickets, totalCount, isLoading, refetch, updateTicket } = useTickets(
     { ...filters, page, limit: pageSize },
     isMerkaz
@@ -81,11 +82,19 @@ export default function MerkazTickets() {
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [statusTicket, setStatusTicket] = useState(null);
 
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
+  const [lastFilters, setLastFilters] = useState(filters);
+
+  const [kabamOptions, setKabamOptions] = useState<string[]>([]);
+
   const handleFilterChange = (key: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    setLastFilters(newFilters);
+    setShowFilterPopup(true);
     setPage(1); // Reset page when filter changes
   };
-
+  
   function handleUpdateStatus(ticketId: number, newStatus: string) {
     updateTicket.mutate(
       { id: ticketId, status: newStatus },
@@ -102,10 +111,6 @@ export default function MerkazTickets() {
     setIsModalOpen(true);
   }
 
-  const kabamOptions = Array.from(
-    new Set(tickets.map(ticket => ticket.kabamRelated).filter(Boolean))
-  );
-
   const ruleOptions = Array.from(
     new Set(
       tickets
@@ -114,12 +119,20 @@ export default function MerkazTickets() {
     )
   ).sort((a, b) => a - b); // Sort numerically if rules are numbers
 
+  /*
   useEffect(() => {
     if (typeof refetch === "function") {
       refetch();
     }
     // Optionally, add dependencies if you want to refetch on filter change, etc.
   }, []); // Empty array = only on mount
+  */
+
+  useEffect(() => {
+    fetch("/api/merkaz-tickets/kabams")
+      .then(res => res.json())
+      .then(data => setKabamOptions(data.kabams || []));
+  }, []);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
   const pageNumbers = [];
@@ -459,45 +472,43 @@ export default function MerkazTickets() {
           </div>
         </div>
       )}
+      {showFilterPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs relative">
+            <button
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+              onClick={() => setShowFilterPopup(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Current Filters</h2>
+            <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">
+              {JSON.stringify(lastFilters, null, 2)}
+            </pre>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+              onClick={() => setShowFilterPopup(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       <div className="flex flex-col items-center mt-8 gap-2">
         <div className="flex items-center gap-1">
-          <button
-            className="px-2 py-1 rounded border"
-            disabled={page === 1}
-            onClick={() => setPage(1)}
-          >
-            {"<<"}
-          </button>
-          <button
-            className="px-2 py-1 rounded border"
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-          >
-            {"<"}
-          </button>
+          <button disabled={page === 1} onClick={() => setPage(1)}>{"<<"}</button>
+          <button disabled={page === 1} onClick={() => setPage(page - 1)}>{"<"}</button>
           {pageNumbers.map(p => (
             <button
               key={p}
-              className={`px-3 py-1 rounded border ${p === page ? "bg-blue-500 text-white" : "bg-white"}`}
+              className={p === page ? "bg-blue-500 text-white" : "bg-white"}
               onClick={() => setPage(p)}
             >
               {p}
             </button>
           ))}
-          <button
-            className="px-2 py-1 rounded border"
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-          >
-            {">"}
-          </button>
-          <button
-            className="px-2 py-1 rounded border"
-            disabled={page === totalPages}
-            onClick={() => setPage(totalPages)}
-          >
-            {">>"}
-          </button>
+          <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>{">"}</button>
+          <button disabled={page === totalPages} onClick={() => setPage(totalPages)}>{">>"}</button>
           <span className="ml-4 text-sm text-gray-600">
             Page {page} of {totalPages}
           </span>

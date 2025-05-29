@@ -183,20 +183,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Ticket routes - Merkaz
   app.get("/api/merkaz-tickets", async (req, res) => {
     try {
-      const { status, kabam, rule, severity, page = "1", limit = "21" } = req.query as Record<string, string>;
+      // Parse pagination params
+      const { page = "1", limit = "21" } = req.query as Record<string, string>;
       const skip = (parseInt(page) - 1) * parseInt(limit);
-      
-      const user = req.user; // however you get the logged-in user
-      const ticketsList = await storage.getMerkazTickets({ status, kabam, rule, severity, skip, limit: parseInt(limit) }, user);
-      const totalCount = await storage.getMerkazTicketsCount({ status, kabam, rule, severity });
 
-      // Explicitly include imageUrl in the response
-      const ticketsWithImage = ticketsList.map(ticket => ({
-        ...ticket,
-        imageUrl: ticket.imageUrl || null, // or whatever your field is called
-      }));
+      // Build filters object
+      const filters = {
+        ...req.query,
+        skip,
+        limit: parseInt(limit),
+      };
 
-      res.json({ tickets: ticketsWithImage, totalCount });
+      // Get filtered & paginated tickets
+      const tickets = await storage.getMerkazTickets(filters, req.user);
+      const totalCount = await storage.getMerkazTicketsCount(filters);
+
+      res.json({ tickets, totalCount });
     } catch (error) {
       console.error("Error fetching merkaz tickets:", error);
       res.status(500).json({ message: "Failed to fetch tickets" });
@@ -221,6 +223,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching merkaz ticket stats:", error);
       res.status(500).json({ message: "Failed to fetch ticket stats" });
+    }
+  });
+
+    app.get("/api/merkaz-tickets/kabams", async (req, res) => {
+    try {
+      // Get all tickets
+      const tickets = await storage.getMerkazTickets({});
+      // Extract unique kabams
+      const kabams = Array.from(
+        new Set(
+          tickets
+            .map(ticket => ticket.kabamRelated)
+            .filter(kabam => kabam)
+        )
+      );
+      res.json({ kabams });
+    } catch (error) {
+      console.error("Error fetching kabams:", error);
+      res.status(500).json({ message: "Failed to fetch kabams" });
     }
   });
 
