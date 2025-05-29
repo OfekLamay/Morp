@@ -402,7 +402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (user.permissionGroup === "Kabam") {
       const userUnits = [user.unit, ...(user.unitsUnder?.split(",") || [])];
       accessibleUnits = userUnits.flatMap(unit => [unit, ...getAllDescendantUnits(unit, allUnits)]);
-    } else if (user.permissionGroup === "Merkaz Nitur") {
+    } else if (user.permissionGroup === "Merkaz") {
       accessibleUnits = allUnits.map(u => u.unit); // Merkaz sees all
     } else if (user.permissionGroup === "System Administrator") {
       accessibleUnits = []; // or whatever logic you want

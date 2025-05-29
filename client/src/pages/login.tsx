@@ -29,7 +29,7 @@ export default function Login() {
       id: "1",
       username,
       fullName: "Alice Smith",
-      permissionGroup: "merkaz_manager",
+      permissionGroup: "Merkaz",
       kabam: "Kabam A",
       unit: "Unit 1",
       parentUnit: "Parent Unit",

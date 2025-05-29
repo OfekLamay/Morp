@@ -37,7 +37,7 @@ export default function UsersTable({
     switch (permissionGroup) {
       case 'System Administrator':
         return 'bg-primary/20 text-primary';
-      case 'Merkaz Nitur':
+      case 'Merkaz':
         return 'bg-purple-500/20 text-purple-500';
       case 'Kabam':
         return 'bg-secondary/20 text-secondary';

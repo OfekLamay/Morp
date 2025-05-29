@@ -14,6 +14,9 @@ export function useTickets(filters?: Record<string, string | number>, isMerkaz =
         .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
         .join("&")}`
     : "";
+
+  // For debugging
+  const fetchUrl = endpoint + queryString;
   
   // Get tickets with optional filtering
   const { data, isLoading, error, refetch } = useQuery<{ tickets: Ticket[], totalCount: number }>({
@@ -95,6 +98,8 @@ export function useTickets(filters?: Record<string, string | number>, isMerkaz =
     updateTicket,
     deleteTicket,
     refetch,
+    fetchUrl,      // <-- add this
+    filters,       // <-- add this
   };
 }
 

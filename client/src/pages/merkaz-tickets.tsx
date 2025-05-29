@@ -56,7 +56,7 @@ function getImageSrc(imageUrl: string | undefined) {
 
 export default function MerkazTickets() {
   const { user } = useUser();
-  const isMerkaz = user.permissionGroup === "Merkaz Nitur" || user.permissionGroup === "System Administrator";
+  const isMerkaz = user.permissionGroup === "Merkaz" || user.permissionGroup === "System Administrator";
 
   const [filters, setFilters] = useState({
     status: "all",
@@ -66,7 +66,7 @@ export default function MerkazTickets() {
   });
   const [page, setPage] = useState(1);
 
-  const { tickets, totalCount, isLoading, refetch, updateTicket } = useTickets(
+  const { tickets, totalCount, isLoading, refetch, updateTicket, fetchUrl } = useTickets(
     { ...filters, page, limit: pageSize },
     isMerkaz
   );
@@ -481,10 +481,17 @@ export default function MerkazTickets() {
             >
               ✕
             </button>
-            <h2 className="text-lg font-semibold mb-4">Current Filters</h2>
-            <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">
-              {JSON.stringify(lastFilters, null, 2)}
-            </pre>
+            <h2 className="text-lg font-semibold mb-4">Current Filters & Fetch URL</h2>
+            <div className="mb-2">
+              <span className="font-semibold">Fetch URL:</span>
+              <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">{fetchUrl}</pre>
+            </div>
+            <div>
+              <span className="font-semibold">Filters:</span>
+              <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto">
+                {JSON.stringify(filters, null, 2)}
+              </pre>
+            </div>
             <button
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
               onClick={() => setShowFilterPopup(false)}
